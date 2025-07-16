@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <form method="post" action="/quiz">
+      {% for q in questions %}
+        <p>{{ q.id }}. {{ q.text }}</p>
+        {% for i in range(1, 8) %}
+          <label><input type="radio" name="question_{{ q.id }}" value="{{ i }}" required>{{ i }}</label>
+        {% endfor %}
+      {% endfor %}
+      <input type="hidden" name="page" value="{{ current_page }}">
+      <button type="submit">
+        {% if current_page < total_pages %}下一頁{% else %}提交{% endif %}
+      </button>
+    </form>
+  </body>
+</html>

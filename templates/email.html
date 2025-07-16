@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <h2>開始測驗前請輸入您的電子信箱：</h2>
+    {% if error %}
+      <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="/start">
+      <input type="email" name="email" required placeholder="example@email.com">
+      <button type="submit">開始測驗</button>
+    </form>
+  </body>
+</html>
