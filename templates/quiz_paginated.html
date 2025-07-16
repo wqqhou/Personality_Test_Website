@@ -1,13 +1,46 @@
 <html>
+  <head>
+    <style>
+      .progress-container {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        height: 20px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #4caf50;
+        width: {{ (current_page / total_pages * 100)|round(0, 'floor') }}%;
+        border-radius: 10px;
+        text-align: center;
+        color: white;
+        font-size: 12px;
+        line-height: 20px;
+      }
+    </style>
+  </head>
   <body>
+    <div class="progress-container">
+      <div class="progress-bar">
+        {{ (current_page / total_pages * 100)|round(0, 'floor') }}%
+      </div>
+    </div>
+
     <form method="post" action="/quiz">
       {% for q in questions %}
         <p>{{ q.id }}. {{ q.text }}</p>
         {% for i in range(1, 8) %}
-          <label><input type="radio" name="question_{{ q.id }}" value="{{ i }}" required>{{ i }}</label>
+          <label>
+            <input type="radio" name="question_{{ q.id }}" value="{{ i }}" required>
+            {{ i }}
+          </label>
         {% endfor %}
       {% endfor %}
+
       <input type="hidden" name="page" value="{{ current_page }}">
+      <br><br>
       <button type="submit">
         {% if current_page < total_pages %}下一頁{% else %}提交{% endif %}
       </button>
