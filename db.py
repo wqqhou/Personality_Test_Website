@@ -8,10 +8,11 @@ async def init():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT NOT NULL,
                 email TEXT NOT NULL,
-                dom REAL,
-                sub REAL,
-                sadist REAL,
-                masochist REAL
+                ageplayer REAL, brat REAL, brat_tamer REAL, daddy_mommy REAL, degrader REAL,
+                dominant REAL, degradee REAL, little REAL, masochist REAL, master_mistress REAL,
+                non_monogamist REAL, owner REAL, primal_hunter REAL, pet REAL, primal_prey REAL,
+                rigger REAL, rope_bunny REAL, sadist REAL, slave REAL, submissive REAL, switch REAL,
+                vanilla REAL, voyeur REAL, exhibitionist REAL, experimentalist REAL
             )
         """)
         await db.commit()

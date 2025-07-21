@@ -6,13 +6,17 @@ import aiosqlite
 from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
 import re
+import json
+
+with open('questions.json') as f:
+    METRIC_CONFIG = json.load(f)
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 templates = Jinja2Templates(directory="templates")
 templates.env.auto_reload = True  # Enable auto reload
 templates.env.cache = {}
-QUESTIONS = [QUESTION_LOOKUP[i] for i in range(1, 46)]
+QUESTIONS = [QUESTION_LOOKUP[i] for i in range(1, 89)]
 
 @app.post("/start", response_class=HTMLResponse)
 async def start_quiz(request: Request, email: str = Form(...)):
@@ -58,62 +62,48 @@ async def handle_quiz_page(request: Request, page: int = Form(...)):
         return RedirectResponse(f"/quiz?page={page+1}", status_code=302)
     return RedirectResponse("/result", status_code=302)
 
-@app.route("/result", methods=["GET", "POST"])
+@app.get("/result", response_class=HTMLResponse)
 async def result(request: Request):
     form_data = request.session.get("answers", {})
-    result = {"Dom": 0, "Sub": 0, "Sadist": 0, "Masochist": 0,
-              "DomQC": 0, "SubQC": 0, "SadistQC": 0, "MasochistQC": 0}
+    metric_scores = {metric: 0 for metric in METRIC_CONFIG}
+    metric_counts = {metric: 0 for metric in METRIC_CONFIG}
 
-    for q in QUESTIONS:
-        raw_score = form_data.get(f"question_{q['id']}")
-        if raw_score is None:
-            continue
-        score = int(raw_score) - 1
-        cat = q['cat']
-        if cat == 1:
-            result["Dom"] += score
-            result["DomQC"] += 1
-        elif cat == 2:
-            result["Sub"] += score
-            result["SubQC"] += 1
-        elif cat == 3:
-            result["Sadist"] += score
-            result["SadistQC"] += 1
-        elif cat == 4:
-            result["Masochist"] += score
-            result["MasochistQC"] += 1
+    for metric, questions in METRIC_CONFIG.items():
+        for q in questions:
+            qid = str(q["question"])
+            direction = q["direction"]
+            answer = form_data.get(f"question_{qid}")
+            if answer is None:
+                continue
+            score = (int(answer) - 1) / 6  # normalize 0-1
+            if direction == "negative":
+                score = 1 - score
+            metric_scores[metric] += score
+            metric_counts[metric] += 1
 
-    domresult = result["Dom"] / (result["DomQC"]*6) if result["DomQC"] else 0
-    subresult = result["Sub"] / (result["SubQC"]*6) if result["SubQC"] else 0
-    sresult = result["Sadist"] / (result["SadistQC"]*6) if result["SadistQC"] else 0
-    mresult = result["Masochist"] / (result["MasochistQC"]*6) if result["MasochistQC"] else 0
+    percentages = {metric: round((metric_scores[metric] / metric_counts[metric]) * 100, 2) 
+                   if metric_counts[metric] else 0
+                   for metric in metric_scores}
 
-    percentages = {
-        "Dom": round(domresult * 100, 2),
-        "Sub": round(subresult * 100, 2),
-        "Sadist": round(sresult * 100, 2),
-        "Masochist": round(mresult * 100, 2),
-    }
     email = request.session.get("email", "unknown@example.com")
-    # Save to SQLite
+    timestamp = datetime.utcnow().isoformat()
+
+    columns = ', '.join(percentages.keys())
+    placeholders = ', '.join(['?'] * len(percentages))
+    values = list(percentages.values())
+
     async with aiosqlite.connect("data.db") as db:
-        await db.execute("""
-            INSERT INTO submissions (timestamp, email, dom, sub, sadist, masochist)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (
-        datetime.utcnow().isoformat(),
-        email,
-        percentages["Dom"],
-        percentages["Sub"],
-        percentages["Sadist"],
-        percentages["Masochist"]
-    ))
+        await db.execute(f"""
+            INSERT INTO submissions (timestamp, email, {columns})
+            VALUES (?, ?, {placeholders})
+        """, [timestamp, email] + values)
         await db.commit()
 
     return templates.TemplateResponse("result.html", {
         "request": request,
         "percentages": percentages
     })
+
 
 @app.get("/admin/count")
 async def count_submissions():

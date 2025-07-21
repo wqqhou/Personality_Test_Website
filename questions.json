@@ -1,0 +1,149 @@
+{
+    "ageplayer": [
+      {"question":1,"direction":"positive","text":"I have a thing for large age differences in sexual encounters or relationships."},
+      {"question":2,"direction":"positive","text":"I enjoy playing a different age than what I technically am."},
+      {"question":3,"direction":"positive","text":"I enjoy dressing or behaving like a child, or engaging in child-appropriate activities such as coloring in a coloring book or going to a playground."},
+      {"question":4,"direction":"positive","text":"I find it adorable when my partner acts or dresses childlike, or when they engage in childlike activities such as coloring in a coloring book or playing on a playground."}
+    ],
+    "brat": [
+      {"question":5,"direction":"positive","text":"I'll often put up a fight in bed, but that doesn't mean I want to win that fight at all."},
+      {"question":6,"direction":"positive","text":"Talking back to one's dominant in a teasingly disobeying way, should be part of the sub's fun."},
+      {"question":7,"direction":"positive","text":"I like being forced into submission, much more than submitting spontaneously."}
+    ],
+    "brat_tamer": [
+      {"question":8,"direction":"positive","text":"I don't mind a little playful resistance from my partner(s), in the end I'll win anyway."},
+      {"question":9,"direction":"positive","text":"I like forcing my partner into submission, much more than them submitting spontaneously."}
+    ],
+    "daddy_mommy": [
+      {"question":10,"direction":"positive","text":"Giving care, spoiling my partner, etc. is one of the main things I'm looking for in a relationship."},
+      {"question":4,"direction":"positive","text":"I find it adorable when my partner acts or dresses childlike, or when they engage in childlike activities such as coloring in a coloring book or playing on a playground."},
+      {"question":11,"direction":"positive","text":"I will naturally take on a nurturing and guiding, almost parental role in a relationship."}
+    ],
+    "degrader": [
+      {"question":12,"direction":"positive","text":"I love making my partners do really disgusting things, purely for my own pleasure."},
+      {"question":13,"direction":"positive","text":"Treating my partner with little or no respect during sex/BDSM arouses me."},
+      {"question":14,"direction":"positive","text":"I like to sexually degrade and/or humiliate my partner(s) sometimes."},
+      {"question":15,"direction":"positive","text":"I enjoy verbally degrading my partner or calling them humiliating names during sex/BDSM."}
+    ],
+    "dominant": [
+      {"question":16,"direction":"positive","text":"I prefer making the sexual decisions for my partner, as this gives me more control."},
+      {"question":9,"direction":"positive","text":"I like forcing my partner into submission, much more than them submitting spontaneously."},
+      {"question":17,"direction":"positive","text":"Ideally I could command my partner, and they'd obey like a puppet no matter what I tell them to do."},
+      {"question":18,"direction":"positive","text":"I like to dominate my partner(s), especially in the bedroom."},
+      {"question":19,"direction":"positive","text":"I want my partner to serve me and address me as a superior."},
+      {"question":20,"direction":"positive","text":"I would like it when my partner is completely tied up during sex/BDSM."}
+    ],
+    "degradee": [
+      {"question":21,"direction":"positive","text":"Being treated with little or no respect during sex/BDSM arouses me."},
+      {"question":22,"direction":"positive","text":"I like to be sexually degraded and humiliated by my partner(s) sometimes."},
+      {"question":23,"direction":"positive","text":"I enjoy being verbally degraded or being called humiliating names during sex/BDSM."}
+    ],
+    "little": [
+      {"question":24,"direction":"positive","text":"Receiving care, being spoiled, etc. are some of the main things I'm looking for in a relationship."},
+      {"question":3,"direction":"positive","text":"I enjoy dressing or behaving like a child, or engaging in child-appropriate activities such as coloring in a coloring book or going to a playground."},
+      {"question":2, "direction":"positive","text":"I enjoy playing a different age than what I technically am."},
+      {"question":25,"direction":"positive","text":"I like it when my partner takes on a nurturing and guiding, almost parental role in the relationship."}
+    ],
+    "masochist": [
+      {"question":26,"direction":"positive","text":"I like receiving pain during sex/BDSM and seeing the results of it (marks/bruises, makeup running by tears, etc.) afterwards."},
+      {"question":27,"direction":"positive","text":"I like to be totally helpless and at my partner's disposal, physically unable to resist what they do."},
+      {"question":28,"direction":"positive","text":"Being in fear of what my partner is going to do to me physically, is arousing."},
+      {"question":29,"direction":"positive","text":"The idea of being tortured sexually, is appealing."},    
+      {"question":30,"direction":"positive","text":"Having to do really disgusting things for my partner's pleasure sounds pretty arousing."},
+      {"question":31,"direction":"positive","text":"When it comes to sexual acts, my own discomfort is pretty much irrelevant if it allows me to give my partner more pleasure."},
+      {"question":32,"direction":"positive","text":"If my partner would really enjoy using me as a urinal, I would happily let them."}
+    ],
+    "master_mistress": [
+      {"question":33,"direction":"positive","text":"I would like to provide my partner(s) with explicit slave training, i.e. train them in prescribed physical positions and rituals, etc."},
+      {"question":34,"direction":"positive","text":"Living with a group of slaves owned by me and serving me, would be my ultimate life goal."},
+      {"question":19,"direction":"positive","text":"I want my partner to serve me and address me as a superior."},
+      {"question":35,"direction":"positive","text":"I'd like my partner(s) to submit to me 24/7 and I'm willing to take the responsibility that comes with it."}
+    ],
+    "non_monogamist": [
+      {"question":36,"direction":"positive","text":"I would like to have sex with multiple people at the same time."},
+      {"question":37,"direction":"positive","text":"I'm totally cool with my partner(s) having sex with other people."},
+      {"question":38,"direction":"positive","text":"My partner having multiple partners, while I'm monogamous (except for threesomes with my partner involved) sounds like a perfectly acceptable situation."},
+      {"question":39,"direction":"positive","text":"If I could not fulfil all of my partner's sexual desires, I would encourage them to see other people to fill the gaps."},
+      {"question":40,"direction":"positive","text":"Assuming I was single, I would like to join an existing couple's or polygroup's relationship for sexual and/or emotional purposes."},
+      {"question":41,"direction":"positive","text":"If part of my sexual desires are not fulfilled with my partner, I would want to see other people to fill the gaps."}
+    ],
+    "owner": [
+      {"question":42,"direction":"positive","text":"I enjoy keeping my partner as a pet: providing them with a cage, feeding them out of a bowl, petting/caressing them, etc."},
+      {"question":43,"direction":"positive","text":"I enjoy it when my partner plays or acts like a pet animal (dog, cat, pony, etc.)"}
+    ],
+    "primal_hunter": [
+      {"question":44,"direction":"positive","text":"I enjoy feeling like a predator hunting its prey."},
+      {"question":45,"direction":"positive","text":"I love seeing the fear in my partner's eyes when they know I'm going to inflict pain on them."},
+      {"question":46,"direction":"positive","text":"Feeling physically overpowered is one of the most liberating sexual feelings."}
+    ],
+    "pet": [
+      {"question":47,"direction":"positive","text":"I enjoy playing or acting like a pet animal (dog, cat, pony, etc.)."},
+      {"question":48,"direction":"positive","text":"I enjoy being kept as a pet: in a cage, eating out of a bowl, being petted/caressed, etc."}
+    ],
+    "primal_prey": [
+      {"question":49,"direction":"positive","text":"I enjoy feeling like a prey hunted by a predator."},
+      {"question":50,"direction":"positive","text":"I often behave in animalistic ways during sex (growling, howling, etc.)."}
+    ],
+    "rigger": [
+      {"question":51,"direction":"positive","text":"Physically restricting my partner during sex/BDSM is arousing."},
+      {"question":20,"direction":"positive","text":"I would like it when my partner is completely tied up during sex/BDSM."}
+     ],
+    "rope_bunny": [
+      {"question":52,"direction":"positive","text":"I would like to be completely tied up during sex/BDSM."},
+      {"question":53,"direction":"positive","text":"Being physically restricted during sex/BDSM (with clothes, attributes, rope, chains, etc.) is arousing."}
+    ],
+    "sadist": [
+      {"question":45,"direction":"positive","text":"I love seeing the fear in my partner's eyes when they know I'm going to inflict pain on them."},
+      {"question":54,"direction":"positive","text":"I like inflicting pain during sex/BDSM and seeing the results of it (marks/bruises, makeup running by tears, etc.) afterwards."},
+      {"question":12,"direction":"positive","text":"I love making my partners do really disgusting things, purely for my own pleasure."},
+      {"question":55,"direction":"positive","text":"When it comes to sexual acts, my partner's discomfort is pretty much irrelevant if it gives me more pleasure."},
+      {"question":56,"direction":"positive","text":"Making my partner suffer for my pleasure is one of the best things in life."},
+      {"question":57,"direction":"positive","text":"The idea of torturing someone sexually, is appealing."}
+    ],
+    "slave": [
+      {"question":58,"direction":"positive","text":"I currently have a Master/Mistress in my life."},
+      {"question":59,"direction":"positive","text":"Being part of a group of slaves that serves one Master/Mistress, sounds like a life that would really suit me."},
+      {"question":60,"direction":"positive","text":"In an ideal relationship, my partner would see me as a mere object: to them, I only exist when they're horny or when they need my service in some other way."},
+      {"question":61,"direction":"positive","text":"I feel the need to serve my partner and treat them with the highest respect, addressing them as a superior."},
+      {"question":62,"direction":"positive","text":"I would like to be nothing but a 24/7 sex slave."}
+    ],
+    "submissive": [
+      {"question":63,"direction":"positive","text":"I like to be dominated, especially in the bedroom."},
+      {"question":64,"direction":"positive","text":"I don't like making sexual decisions, I prefer my partner to make them for me."},
+      {"question":65,"direction":"positive","text":"I like to be totally helpless and at my partner's disposal."},
+      {"question":66,"direction":"positive","text":"My ultimate goal in life is to please my partner(s), and there's hardly anything I wouldn't do to reach that goal."},
+      {"question":67,"direction":"positive","text":"In an ideal relationship, I should have no hard limits, my life should belong to my partner and they should decide what is good for me."},
+      {"question":68,"direction":"positive","text":"I'll go a long way to make my appearance match my partner's desires."},
+      {"question":69,"direction":"positive","text":"I like my partner(s) to be completely in charge in the bedroom, ordering me around."},
+      {"question":31,"direction":"positive","text":"When it comes to sexual acts, my own discomfort is pretty much irrelevant if it allows me to give my partner more pleasure."},
+      {"question":70,"direction":"positive","text":"I don't need physical pleasure from sex: if my partner is enjoying it, that's all I need."},
+      {"question":71,"direction":"positive","text":"I'd like to submit to my partner 24/7 and see serving them as my life purpose."}
+    ],
+    "switch":[
+      {"question":72,"direction":"positive","text":"I could be sexually submissive now, and dominant another time."},
+      {"question":73,"direction":"positive","text":"I could not be always dominant or always submissive, I need both."}
+    ],
+    "vanilla":[
+      {"question":74,"direction":"positive","text":"I don't have any sort of specific fetish or non-standard sexual turn-on."},
+      {"question":75,"direction":"positive","text":"I find the romantic aspect in a relationship much more important than the sexual or kinky aspects."},
+      {"question":76,"direction":"positive","text":"I am currently in a long term relationship."},
+      {"question":77,"direction":"negative","text":"I would be willing to leave everything I have behind, to live the BDSM-life of my dreams.."},
+      {"question":78,"direction":"negative","text":"I have plenty of sexual fantasies that I would like to try out, more than most of my kinky peers."}
+    ],
+    "voyeur":[
+      {"question":79,"direction":"positive","text":"I enjoy watching other people being naked or having sex."},
+      {"question":80,"direction":"positive","text":"I am willing to pay for porn if it really suits my sexual interests."},
+      {"question":81,"direction":"positive","text":"Sometimes, watching people have sex is more fun than participating."}
+    ],
+    "exhibitionist":[
+      {"question":82,"direction":"positive","text":"I enjoy it when people watch me being naked or having sex."},
+      {"question":83,"direction":"positive","text":"I like sending nude or sexual pictures/videos of myself to others."},
+      {"question":84,"direction":"positive","text":"There is no reason why sex would have to happen in private spaces, isolated from the outside world."},
+      {"question":85,"direction":"positive","text":"If I could make some money from selling porn clips of myself, I definitely would."}
+    ],
+    "experimentalist":[
+      {"question":86,"direction":"positive","text":"I am willing to try anything once, even if I don't think I will like it."},
+      {"question":87,"direction":"positive","text":"It's no big deal when things I try turn out bad for me. It's part of the risk and it's a necessary part of discovering what works and what doesn't."},
+      {"question":88,"direction":"positive","text":"I have a need to constantly try new things."}
+    ]
+  }
