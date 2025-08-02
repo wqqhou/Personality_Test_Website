@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BDSM 測驗</title>
+  <title>BDSM 性向测验</title>
   <style>
+    @font-face {
+      font-family: 'KingHwa_OldSong';
+      src: url('/static/fonts/KingHwa_OldSong.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'KingHwa_OldSong', sans-serif;
       max-width: 600px;
       margin: auto;
       padding: 20px;
       line-height: 1.6;
+      background: linear-gradient(117deg, rgba(235,192,191,0.00) 0%, rgba(210,155,174,0.50) 73.46%), 
+            linear-gradient(180deg, #EEC29D 0%, #EFDAC8 20%, #EFDAC8 79.81%, #EEC29D 100%),
+            #FFF;
     }
 
     .progress-container {
@@ -24,7 +34,7 @@
 
     .progress-bar {
       height: 100%;
-      background-color: #4caf50;
+      background-color: #D28CF5;
       width: {{ (current_page / total_pages * 100)|round(0, 'floor') }}%;
       border-radius: 10px;
       text-align: center;
@@ -54,16 +64,17 @@
 
     button {
       padding: 10px 20px;
-      background-color: #4caf50;
+      background-color: #D28CF5;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-family: 'KingHwa_OldSong', sans-serif;
       font-size: 16px;
     }
 
     button:hover {
-      background-color: #45a049;
+      background-color: #D28CF5;
     }
   </style>
 </head>

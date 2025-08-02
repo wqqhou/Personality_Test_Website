@@ -7,11 +7,15 @@ from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
 import re
 import json
+from fastapi.staticfiles import StaticFiles
+
+
 
 with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 templates = Jinja2Templates(directory="templates")
 templates.env.auto_reload = True  # Enable auto reload

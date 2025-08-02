@@ -1,16 +1,19 @@
+
+
 export default {
-    content: ["./templates/**/*.html"],
-    theme: {
-      extend: {
-        colors: {
-          'gradient-start': '#ffddc1',
-          'gradient-end': '#ffb3c1',
-        },
-        fontFamily: {
-          serif: ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
-        },
+  content: ["./templates/**/*.html"],
+  theme: {
+    extend: {
+      fontFamily: {
+        kinghwa: ['KingHwa_OldSong', 'serif'],
+      },
+      fontSize: {
+        hero: ['120px', { lineHeight: '1' }], // 120px, line-height: 100%
+      },
+      colors: {
+        'text-dark': '#0A0A0A',
       },
     },
-    plugins: [],
-  };
-  
+  },
+  plugins: [],
+}
