@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hans" class="min-h-screen h-full">
 <head>
+  <link rel="preload" href="/static/fonts/KingHwa_OldSong.woff2" as="font" type="font/woff2" crossorigin>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/static/css/style.css" rel="stylesheet">
@@ -8,13 +9,14 @@
 </head>
 
 <style>
-  @font-face {
-    font-family: 'KingHwa_OldSong';
-    src: url('/static/fonts/KingHwa_OldSong.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
+@font-face {
+  font-family: 'KingHwa_OldSong';
+  src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'),
+       url('/static/fonts/KingHwa_OldSong.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
   body {
     font-family: 'KingHwa_OldSong', sans-serif;
     margin: auto;
