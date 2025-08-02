@@ -54,14 +54,8 @@
 .justify-center {
   justify-content: center;
 }
-.gap-\[4px\] {
-  gap: 4px;
-}
 .gap-\[8px\] {
   gap: 8px;
-}
-.gap-\[10px\] {
-  gap: 10px;
 }
 .rounded-\[8px\] {
   border-radius: 8px;
@@ -80,9 +74,6 @@
 .px-\[4px\] {
   padding-inline: 4px;
 }
-.py-\[2px\] {
-  padding-block: 2px;
-}
 .pt-\[120px\] {
   padding-top: 120px;
 }
@@ -92,8 +83,8 @@
 .text-\[20px\] {
   font-size: 20px;
 }
-.text-\[48px\] {
-  font-size: 48px;
+.text-\[42px\] {
+  font-size: 42px;
 }
 .leading-\[1\] {
   --tw-leading: 1;
