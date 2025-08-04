@@ -10,6 +10,7 @@ import json
 from fastapi.staticfiles import StaticFiles
 import random
 import os
+import metrics 
 
 with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
@@ -129,12 +130,15 @@ async def result(request: Request):
             VALUES (?, ?, {placeholders})
         """, [timestamp, email] + values)
         await db.commit()
-
+    # Prepare mandarin labels
+    percentages_zh = {
+        metrics.ZH.get(metric, metric): percent
+        for metric, percent in percentages.items()
+    }
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "percentages": percentages
+        "percentages": percentages_zh  # pass Mandarin labels here
     })
-
 
 
 @app.get("/admin/count")
