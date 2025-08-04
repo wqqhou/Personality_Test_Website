@@ -100,14 +100,16 @@
 .text-inherit {
   color: inherit;
 }
-.capitalize {
-  text-transform: capitalize;
-}
 .uppercase {
   text-transform: uppercase;
 }
 .no-underline {
   text-decoration-line: none;
+}
+.transition {
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
+  transition-timing-function: var(--tw-ease, ease);
+  transition-duration: var(--tw-duration, 0s);
 }
 .outline-none {
   --tw-outline-style: none;

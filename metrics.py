@@ -1,4 +1,4 @@
-ZH ={
+METRICS_ZH = {
     "ageplayer":"异岁扮演",
     "brat": "捣蛋/挑衅者",
     "brat_tamer": "管教者",
@@ -25,3 +25,30 @@ ZH ={
     "exhibitionist": "暴露狂",
     "experimentalist": "实验者"
   }
+DES_ZH = {
+    "ageplayer":"异岁扮演",
+    "brat": "捣蛋/挑衅者",
+    "brat_tamer": "管教者",
+    "daddy_mommy": "爹地、妈咪", 
+    "degrader": "羞辱者",
+    "dominant": "支配者",
+    "degradee": "被羞辱者", 
+    "little": "小朋友",
+    "masochist": "受虐狂",
+    "master_mistress": "人类僕从的主人",
+    "non_monogamist": "非单偶制者",
+    "owner": "物品/宠物的主人",
+    "primal_hunter": "掠食动物",
+    "pet": "宠物",
+    "primal_prey": "猎物",
+    "rigger": "绳手",
+    "rope_bunny": "受缚者",
+    "sadist": "施虐狂",
+    "slave": "奴隶",
+    "submissive": "服从者",
+    "switch": "双属性者",
+    "vanilla": "香草",
+    "voyeur": "偷窥狂",
+    "exhibitionist": "暴露狂",
+    "experimentalist": "实验者"
+}

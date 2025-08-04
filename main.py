@@ -117,6 +117,14 @@ async def result(request: Request):
         for metric in metric_scores
     }
 
+    results = {
+        metric: {
+            "label": metrics.METRICS_ZH.get(metric, metric),
+            "description": metrics.DES_ZH.get(metric, ""),
+            "percent": percentages[metric]
+        }
+        for metric in percentages
+    }
     email = request.session.get("email", "unknown@example.com")
     timestamp = datetime.utcnow().isoformat()
 
@@ -132,12 +140,17 @@ async def result(request: Request):
         await db.commit()
     # Prepare mandarin labels
     percentages_zh = {
-        metrics.ZH.get(metric, metric): percent
+        metrics.METRICS_ZH.get(metric, metric): percent
         for metric, percent in percentages.items()
     }
+    descriptions = {
+        metrics.DES_ZH.get(metric, metric)
+        for metric in percentages.keys()
+    }
+
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "percentages": percentages_zh  # pass Mandarin labels here
+        "results": results
     })
 
 

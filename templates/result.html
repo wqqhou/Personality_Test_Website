@@ -6,7 +6,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BDSM 性向测验</title>
+
   <style>
+
+.tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 8px;
+      border-radius: 6px;
+
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; /* Position above the label */
+      left: 50%;
+      margin-left: -110px; /* Half of the width */
+
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
 @font-face {
   font-family: 'KingHwa_OldSong';
   src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'),
@@ -66,17 +97,23 @@
   </style>
 </head>
 <body>
-  <h2>您的 BDSM 分析结果：</h2>
+  <h2>您的 BDSM 分析結果：</h2>
   <ul>
-    {% for metric, value in percentages|dictsort(false, 'value')|reverse %}
-      <li>{{ metric | capitalize }}: {{ value }}%</li>
+    {% for metric, data in results.items() %}
+      <li>
+        <div class="tooltip">
+          {{ data.label }}
+          <span class="tooltiptext">{{ data.description }}</span>
+        </div>
+        : {{ data.percent }}%
+      </li>
     {% endfor %}
   </ul>
-
   <div class="links">
-    <a href="/">再测一次</a>
+    <a href="/">再測一次</a>
     <a href="https://www.xiaohongshu.com/user/profile/628745ee0000000021028c41?xsec_token=YBXJ4cMM0Y6Gzku1zx3plfxfQo_QqEd7XX3fVdjgVksyw=&xsec_source=app_share&xhsshare=CopyLink&appuid=628745ee0000000021028c41&apptime=1752557830&share_id=e260aad65d474232bacd0678356cc804" target="_blank">看更多文章（小红书）</a>
     <a href="https://mp.weixin.qq.com/s/RbUKIilNeGB38pCGLLVcVw" target="_blank">看更多文章（微信）</a>
+  </div>
   </div>
 </body>
 </html>
