@@ -87,11 +87,14 @@
       {{ (current_page / total_pages * 100)|round(0, 'floor') }}%
     </div>
   </div>
+  <div class="instruction">
+    <p>对于下列描述 1 分为完全不同意，4 分为没意见，7 分則为非常同意。</p>
+  </div>
 
   <form method="post" action="/quiz">
     {% for q in questions %}
       <div class="question">
-        <p>{{ q.id }}. {{ q.text }}</p>
+        <p>{{ (current_page - 1) * 7 + loop.index }}. {{ q.text }}</p>
         <div class="options">
           {% for i in range(1, 8) %}
             <label>

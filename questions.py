@@ -90,3 +90,4 @@ QUESTIONS = [
 ]
 
 QUESTION_LOOKUP = {q["id"]: q for q in QUESTIONS}
+QUESTION_COUNT = len(QUESTIONS)
