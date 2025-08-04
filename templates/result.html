@@ -10,34 +10,39 @@
   <style>
 
 .tooltip {
-      position: relative;
-      display: inline-block;
-      cursor: help;
-    }
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
 
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 220px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 8px;
-      border-radius: 6px;
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
 
-      position: absolute;
-      z-index: 1;
-      bottom: 125%; /* Position above the label */
-      left: 50%;
-      margin-left: -110px; /* Half of the width */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -110px;
 
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none; /* Prevent blocking taps */
+}
 
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
-    }
+.tooltip:active .tooltiptext,
+.tooltip:focus .tooltiptext,
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 @font-face {
   font-family: 'KingHwa_OldSong';
   src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'),
@@ -101,7 +106,7 @@
   <ul>
     {% for metric, data in results.items() %}
       <li>
-        <div class="tooltip">
+        <div class="tooltip" tabindex="0">
           {{ data.label }}
           <span class="tooltiptext">{{ data.description }}</span>
         </div>
