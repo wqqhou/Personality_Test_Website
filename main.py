@@ -9,13 +9,14 @@ import re
 import json
 from fastapi.staticfiles import StaticFiles
 import random
+import os
 
 with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
 templates = Jinja2Templates(directory="templates")
 templates.env.auto_reload = True  # Enable auto reload
 templates.env.cache = {}
