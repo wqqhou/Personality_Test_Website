@@ -108,9 +108,19 @@
 
     <input type="hidden" name="page" value="{{ current_page }}">
     <br>
-    <button type="submit">
-      {% if current_page < total_pages %}下一页{% else %}提交{% endif %}
-    </button>
+    <div class="pagination-buttons" style="display: flex; justify-content: space-between; margin-top: 24px;">
+      {% if current_page > 1 %}
+        <a href="/quiz?page={{ current_page - 1 }}" class="prev-btn" style="padding: 8px 20px; border-radius: 8px; background: #D28CF5; color: #fff; text-decoration: none;">上一页</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+    
+      {% if current_page < total_pages %}
+        <button type="submit" class="next-btn" style="padding: 8px 20px; border-radius: 8px; background: #D28CF5; color: #fff;">下一页</button>
+      {% else %}
+        <button type="submit" class="next-btn" style="padding: 8px 20px; border-radius: 8px; background: #D28CF5; color: #fff;">提交</button>
+      {% endif %}
+    </div>
   </form>
 </body>
 </html>
