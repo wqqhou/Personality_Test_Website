@@ -148,9 +148,17 @@ async def result(request: Request):
         for metric in percentages.keys()
     }
 
+    sorted_results = dict(
+        sorted(
+            results.items(),
+            key=lambda item: item[1]['percent'],
+            reverse=True
+        )
+    )
+
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "results": results
+        "results": sorted_results
     })
 
 
