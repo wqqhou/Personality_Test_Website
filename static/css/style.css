@@ -1,7 +1,13 @@
 /*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
+.absolute {
+  position: absolute;
+}
 .fixed {
   position: fixed;
+}
+.relative {
+  position: relative;
 }
 .static {
   position: static;
@@ -17,6 +23,9 @@
 }
 .hidden {
   display: none;
+}
+.inline-block {
+  display: inline-block;
 }
 .h-\[30px\] {
   height: 30px;

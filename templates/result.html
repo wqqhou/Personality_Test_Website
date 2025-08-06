@@ -108,7 +108,9 @@
       <li>
         <div class="tooltip" tabindex="0">
           {{ data.label }}
-          <span class="tooltiptext">{{ data.description }}</span>
+          <div class="relative inline-block">
+          <span class="tooltiptext absolute">{{ data.description }}</span>
+          </div>
         </div>
         : {{ data.percent }}%
       </li>
