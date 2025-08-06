@@ -16,17 +16,18 @@
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  min-width: 120px;
-  max-width: 90vw;
+  min-width: 220px;
+  max-width: 420px;
+  width: max-content;
   background-color: #333;
   color: #fff;
   text-align: left;
-  padding: 8px;
+  padding: 12px 18px;
   border-radius: 6px;
 
   position: absolute;
   z-index: 1;
-  top: 120%; /* Position BELOW the label */
+  top: 120%;  /* Always below the label */
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -35,8 +36,11 @@
   white-space: normal;
   word-break: break-word;
   box-sizing: border-box;
-}
 
+  /* Prevent overflow on small screens */
+  max-width: 92vw;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.11);
+}
 
 .tooltip:hover .tooltiptext,
 .tooltip:active .tooltiptext,
@@ -45,6 +49,7 @@
   opacity: 1;
   pointer-events: auto;
 }
+
 
 @font-face {
   font-family: 'KingHwa_OldSong';
