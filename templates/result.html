@@ -18,8 +18,8 @@
 /* Tooltip box, always centered below, never overflows left/right */
 .tooltip .tooltiptext {
   visibility: hidden;
-  min-width: 220px;
-  max-width: 92vw;
+  min-width: 200px;
+  max-width: 340px;    /* Reduced for 1920px screens */
   width: max-content;
   background-color: #333;
   color: #fff;
@@ -29,14 +29,14 @@
   position: absolute;
   z-index: 1;
   top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
   white-space: normal;
   word-break: break-word;
   box-sizing: border-box;
+  max-width: 92vw;
   box-shadow: 0 4px 24px rgba(0,0,0,0.11);
 }
 
@@ -47,7 +47,6 @@
   opacity: 1;
   pointer-events: auto;
 }
-
 
 @font-face {
   font-family: 'KingHwa_OldSong';
