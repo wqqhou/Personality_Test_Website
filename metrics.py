@@ -26,7 +26,7 @@ METRICS_ZH = {
     "experimentalist": "实验者"
   }
 DES_ZH = {
-    "ageplayer":"异岁扮演",
+    "ageplayer":"异岁扮演texttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttexttexttexttextttext",
     "brat": "捣蛋/挑衅者",
     "brat_tamer": "管教者",
     "daddy_mommy": "爹地、妈咪", 
