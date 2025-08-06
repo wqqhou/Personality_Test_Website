@@ -110,7 +110,7 @@
   <ul>
     {% for metric, data in results.items() %}
       <li>
-        <div class="tooltip" tabindex="0">
+        <div class="tooltip trigger-tooltip" tabindex="0">
           {{ data.label }}
             <span class="tooltiptext">{{ data.description }}</span>
         </div>
@@ -124,5 +124,35 @@
     <a href="https://mp.weixin.qq.com/s/RbUKIilNeGB38pCGLLVcVw" target="_blank">看更多文章（微信）</a>
   </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Handle all tooltip triggers
+      const triggers = document.querySelectorAll('.trigger-tooltip');
+      triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function(event) {
+          // Close all tooltips
+          triggers.forEach(t => t.classList.remove('active'));
+          // Open this one
+          trigger.classList.add('active');
+          // Prevent this click from bubbling to document
+          event.stopPropagation();
+        });
+        // Optional: Keyboard accessibility (Enter or Space to open)
+        trigger.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            triggers.forEach(t => t.classList.remove('active'));
+            trigger.classList.add('active');
+            event.preventDefault();
+          }
+        });
+      });
+    
+      // Hide all tooltips when clicking outside
+      document.addEventListener('click', function () {
+        triggers.forEach(t => t.classList.remove('active'));
+      });
+    });
+    </script>
 </body>
 </html>
