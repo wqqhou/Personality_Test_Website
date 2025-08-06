@@ -15,11 +15,11 @@
   cursor: help;
 }
 
-/* Tooltip box */
+/* Tooltip box, always centered below, never overflows left/right */
 .tooltip .tooltiptext {
   visibility: hidden;
   min-width: 220px;
-  max-width: 420px;
+  max-width: 92vw;
   width: max-content;
   background-color: #333;
   color: #fff;
@@ -29,19 +29,16 @@
   position: absolute;
   z-index: 1;
   top: 120%;
-  left: 0; /* Start from the left edge of parent */
+  left: 50%;
+  transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
   white-space: normal;
   word-break: break-word;
   box-sizing: border-box;
-  max-width: 92vw;
   box-shadow: 0 4px 24px rgba(0,0,0,0.11);
 }
-
-/* Keep arrow/triangle optional if you want */
-/* .tooltip .tooltiptext::before { ... } */
 
 .tooltip:hover .tooltiptext,
 .tooltip:active .tooltiptext,
@@ -50,6 +47,7 @@
   opacity: 1;
   pointer-events: auto;
 }
+
 
 @font-face {
   font-family: 'KingHwa_OldSong';
