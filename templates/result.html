@@ -9,23 +9,13 @@
 
   <style>
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: help;
-  left: 10px;
-  top: 50%
-}
-.container {
-  position: relative;
-  display: inline-block;
-}
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 220px;
+  min-width: 120px;
+  max-width: 90vw;
   background-color: #333;
   color: #fff;
-  text-align: center;
+  text-align: left;
   padding: 8px;
   border-radius: 6px;
 
@@ -33,20 +23,21 @@
   z-index: 1;
   bottom: 125%;
   left: 50%;
-  margin-left: -110px;
-
+  transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s;
-  pointer-events: none; /* Prevent blocking taps */
+  pointer-events: none;
+  white-space: normal;
+  word-break: break-word;
+  box-sizing: border-box;
 }
 
+.tooltip:hover .tooltiptext,
 .tooltip:active .tooltiptext,
-.tooltip:focus .tooltiptext,
-.tooltip:hover .tooltiptext {
+.tooltip:focus .tooltiptext {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
-  
 }
 
 @font-face {
@@ -114,9 +105,7 @@
       <li>
         <div class="tooltip" tabindex="0">
           {{ data.label }}
-          <div class="container">
             <span class="tooltiptext">{{ data.description }}</span>
-          </div>
         </div>
         : {{ data.percent }}%
       </li>
