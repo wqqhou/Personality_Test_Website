@@ -13,8 +13,13 @@
   position: relative;
   display: inline-block;
   cursor: help;
+  left: 10px;
+  top: 50%
 }
-
+.container {
+  position: relative;
+  display: inline-block;
+}
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 220px;
@@ -109,8 +114,8 @@
       <li>
         <div class="tooltip" tabindex="0">
           {{ data.label }}
-          <div class="relative inline-block">
-          <span class="tooltiptext absolute">{{ data.description }}</span>
+          <div class="container">
+            <span class="tooltiptext">{{ data.description }}</span>
           </div>
         </div>
         : {{ data.percent }}%
