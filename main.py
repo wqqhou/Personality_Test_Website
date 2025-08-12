@@ -17,6 +17,8 @@ with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
 
 app = FastAPI()
+if os.getenv("ENV") == "dev":
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 #app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
 app.add_middleware(GZipMiddleware, minimum_size=500)
