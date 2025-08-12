@@ -17,11 +17,11 @@ with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
 app.add_middleware(GZipMiddleware, minimum_size=500)
 templates = Jinja2Templates(directory="templates")
-templates.env.auto_reload = True  # Enable auto reload
+templates.env.auto_reload = False  # Enable auto reload
 templates.env.cache = {}
 QUESTIONS = [QUESTION_LOOKUP[i] for i in range(1, len(QUESTION_LOOKUP)+1)]
 QUESTION_IDS = list(range(1, len(QUESTIONS) + 1))
