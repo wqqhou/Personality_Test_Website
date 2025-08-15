@@ -2,144 +2,200 @@
 <html lang="zh">
 <head>
   <link rel="preload" href="/static/fonts/KingHwa_OldSong.woff2" as="font" type="font/woff2" crossorigin>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BDSM 性向测验</title>
 
   <style>
+    /* ---------- Tooltip ---------- */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      min-width: 200px;
+      max-width: 340px;
+      width: max-content;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      padding: 12px 18px;
+      border-radius: 6px;
+      position: absolute;
+      z-index: 1;
+      top: 120%;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      white-space: normal;
+      word-break: break-word;
+      box-sizing: border-box;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.11);
+    }
+    .tooltip:hover .tooltiptext,
+    .tooltip:active .tooltiptext,
+    .tooltip:focus .tooltiptext,
+    .tooltip.active .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: help;
-}
+    /* ---------- Font ---------- */
+    @font-face {
+      font-family: 'KingHwa_OldSong';
+      src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'),
+           url('/static/fonts/KingHwa_OldSong.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
 
-/* Tooltip box, always centered below, never overflows left/right */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  min-width: 200px;
-  max-width: 340px;    /* Reduced for 1920px screens */
-  width: max-content;
-  background-color: #333;
-  color: #fff;
-  text-align: left;
-  padding: 12px 18px;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1;
-  top: 120%;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  white-space: normal;
-  word-break: break-word;
-  box-sizing: border-box;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.11);
-}
-
-.tooltip:hover .tooltiptext,
-.tooltip:active .tooltiptext,
-.tooltip:focus .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-@font-face {
-  font-family: 'KingHwa_OldSong';
-  src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'),
-       url('/static/fonts/KingHwa_OldSong.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+    /* ---------- Page background & layout ---------- */
+    html, body { min-height: 100%; }
+    html {
+      background:
+        linear-gradient(117deg, rgba(235,192,191,0.00) 0%, rgba(210,155,174,0.50) 73.46%),
+        linear-gradient(180deg, #EEC29D 0%, #EFDAC8 20%, #EFDAC8 79.81%, #EEC29D 100%),
+        #FFF;
+      background-attachment: scroll;
+      min-height: 100dvh;
+    }
     body {
       font-family: 'KingHwa_OldSong', sans-serif;
-      max-width: 600px;
-      height: 100vh;
-      margin: auto;
-      padding: 20px;
+      margin: 0;
+      padding: 24px 16px;
       line-height: 1.6;
-      background: linear-gradient(117deg, rgba(235,192,191,0.00) 0%, rgba(210,155,174,0.50) 73.46%), 
-            linear-gradient(180deg, #EEC29D 0%, #EFDAC8 20%, #EFDAC8 79.81%, #EEC29D 100%),
-            #FFF;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
     }
 
+    /* ---------- One big result box ---------- */
+    .result-card {
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border: 1px solid #e6e6e6;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      padding: 20px 20px 12px;    
+      overflow-y: auto;       /* scroll inside if needed */
+    }
     h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin: 0 0 16px 0;
+      font-size: 20px;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
+    /* ---------- List reset ---------- */
+    ul { list-style: none; padding: 0; margin: 0; }
+
+    /* ---------- Compact metric rows with bar ---------- */
+    .metric-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto; /* fixed label width */
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 2px;
+  font-size: 10px;
+  padding-bottom: 3px;                /* space above the line */
+  border-bottom: 1px solid rgba(0,0,0,0.08); /* subtle divider */
+}
+
+.metric-row:last-child {
+  border-bottom: none;                /* no line after the last row */
+  padding-bottom: 0;
+}
+    .metric-bar {
+      position: relative;
+      height: 8px;
+      background: #eee;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .metric-fill {
+      height: 100%;
+      width: 0;
+      background: #D28CF5;           /* bar color */
+      border-radius: 999px;
+      transition: width 400ms ease;  /* smooth animate in */
+    }
+    .metric-value {
+      width: 54px;           /* align numbers */
+      text-align: right;
+      white-space: nowrap;
     }
 
-    li {
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 16px;
-    }
-
+    /* Bottom link buttons */
     .links {
-      margin-top: 20px;
+      margin-top: 12px;
       text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
-
     .links a {
       display: inline-block;
-      margin: 5px;
       padding: 8px 15px;
       background-color: #D28CF5;
       color: white;
-      border-radius: 5px;
+      border-radius: 8px;
       text-decoration: none;
     }
+    .links a:hover { opacity: 0.95; }
 
-    .links a:hover {
-      background-color: #D28CF5;
+    /* Small screens */
+    @media (max-width: 420px) {
+      .result-card { padding: 16px; }
+      h2 { font-size: 20px; }
+      .metric-row { gap: 8px; font-size: 13px; }
+      .metric-bar { height: 8px; }
+      .metric-value { width: 48px; }
     }
   </style>
 </head>
 <body>
-  <h2>您的 BDSM 分析結果：</h2>
-  <ul>
-    {% for metric, data in results.items() %}
-      <li>
-        <div class="tooltip trigger-tooltip" tabindex="0">
-          {{ data.label }}
+  <div class="result-card">
+    <h2>您的 BDSM 分析結果：</h2>
+
+    <ul>
+      {% for metric, data in results.items() %}
+        <li class="metric-row">
+          <div class="metric-label tooltip trigger-tooltip" tabindex="0">
+            {{ data.label }}
             <span class="tooltiptext">{{ data.description }}</span>
-        </div>
-        : {{ data.percent }}%
-      </li>
-    {% endfor %}
-  </ul>
-  <div class="links">
-    <a href="/">再測一次</a>
-    <a href="https://www.xiaohongshu.com/user/profile/628745ee0000000021028c41?xsec_token=YBXJ4cMM0Y6Gzku1zx3plfxfQo_QqEd7XX3fVdjgVksyw=&xsec_source=app_share&xhsshare=CopyLink&appuid=628745ee0000000021028c41&apptime=1752557830&share_id=e260aad65d474232bacd0678356cc804" target="_blank">看更多文章（小红书）</a>
-    <a href="https://mp.weixin.qq.com/s/RbUKIilNeGB38pCGLLVcVw" target="_blank">看更多文章（微信）</a>
-  </div>
+          </div>
+
+          <div class="metric-bar" role="img" aria-label="{{ data.label }} {{ data.percent }}%">
+            <div class="metric-fill" style="width: {{ data.percent }}%;"></div>
+          </div>
+
+          <div class="metric-value">{{ data.percent }}%</div>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="links">
+      <a href="/">再測一次</a>
+      <a href="https://www.xiaohongshu.com/user/profile/628745ee0000000021028c41?xsec_token=YBXJ4cMM0Y6Gzku1zx3plfxfQo_QqEd7XX3fVdjgVksyw=&xsec_source=app_share&xhsshare=CopyLink&appuid=628745ee0000000021028c41&apptime=1752557830&share_id=e260aad65d474232bacd0678356cc804" target="_blank">看更多文章（小红书）</a>
+      <a href="https://mp.weixin.qq.com/s/RbUKIilNeGB38pCGLLVcVw" target="_blank">看更多文章（微信）</a>
+    </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Handle all tooltip triggers
       const triggers = document.querySelectorAll('.trigger-tooltip');
       triggers.forEach(function(trigger) {
         trigger.addEventListener('click', function(event) {
-          // Close all tooltips
           triggers.forEach(t => t.classList.remove('active'));
-          // Open this one
           trigger.classList.add('active');
-          // Prevent this click from bubbling to document
           event.stopPropagation();
         });
-        // Optional: Keyboard accessibility (Enter or Space to open)
         trigger.addEventListener('keydown', function(event) {
           if (event.key === 'Enter' || event.key === ' ') {
             triggers.forEach(t => t.classList.remove('active'));
@@ -148,12 +204,10 @@
           }
         });
       });
-    
-      // Hide all tooltips when clicking outside
       document.addEventListener('click', function () {
         triggers.forEach(t => t.classList.remove('active'));
       });
     });
-    </script>
+  </script>
 </body>
 </html>
