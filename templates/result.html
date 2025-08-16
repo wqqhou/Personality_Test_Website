@@ -76,8 +76,9 @@
 
     /* ---------- One big result box ---------- */
     .result-card {
-      width: 100%;
-      max-width: 560px;
+      width: 600px;
+      min-width: 50%;
+      max-width: 100%;
       background: #fff;
       border: 1px solid #e6e6e6;
       border-radius: 12px;
@@ -88,7 +89,7 @@
     h2 {
       text-align: center;
       margin: 0 0 16px 0;
-      font-size: 20px;
+      font-size: 22px;
     }
 
     /* ---------- List reset ---------- */
@@ -97,11 +98,11 @@
     /* ---------- Compact metric rows with bar ---------- */
     .metric-row {
   display: grid;
-  grid-template-columns: 80px 1fr auto; /* fixed label width */
+  grid-template-columns: 100px 1fr auto; /* fixed label width */
   align-items: center;
-  gap: 3px;
-  margin-bottom: 2px;
-  font-size: 10px;
+  gap: 6px;
+  margin-bottom: 3px;
+  font-size: 13px;
   padding-bottom: 3px;                /* space above the line */
   border-bottom: 1px solid rgba(0,0,0,0.08); /* subtle divider */
 }
