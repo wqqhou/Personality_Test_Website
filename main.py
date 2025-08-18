@@ -172,3 +172,11 @@ async def count_submissions():
         async with db.execute("SELECT COUNT(*) FROM submissions") as cursor:
             row = await cursor.fetchone()
             return {"total_submissions": row[0]}
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
+
+@app.get("/donate", response_class=HTMLResponse)
+async def donation(request: Request):
+    return templates.TemplateResponse("donate.html", {"request": request})
