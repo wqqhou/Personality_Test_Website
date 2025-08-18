@@ -34,6 +34,7 @@
       line-height: 1.6;
       display: flex; justify-content: center;
       min-height: 100dvh; overflow-x: hidden;
+      box-sizing: border-box;
     }
 
     /* Navbar (same as about) */
@@ -72,38 +73,47 @@
       border: 1px solid #e6e6e6; border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.06);
       padding: 24px 22px;
+      box-sizing: border-box;
     }
     h1 { margin: 0 0 12px; font-size: 28px; text-align: center; }
     p.lead { margin: 0 0 16px; text-align: center; color: #333; }
 
-    .donation-list {
-      margin-top: 12px; display: grid; gap: 12px;
-    }
-    .donation-item {
-      background: #fafafa; border: 1px solid #e8e8e8; border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .donation-title {
-      margin: 0 0 6px; font-size: 18px;
-    }
-    .donation-desc {
-      margin: 0; color: #444; font-size: 15px;
-    }
+    /* Donation list: mobile-first single column */
+    .donation-list { margin-top: 12px; display: grid; gap: 12px; }
+
+/* Keep these base styles */
+.donation-item {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;            /* vertical stack */
+  flex-direction: column;   /* title above description */
+  gap: 6px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.donation-title { margin: 0; font-size: 18px; line-height: 1.3; }
+.donation-desc  { margin: 0; color: #444; font-size: 15px; line-height: 1.55; }
+
+
 
     .links {
-      margin-top: 18px; text-align: center; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-top: 18px; text-align: center;
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
     }
     .links a {
       display: inline-block; padding: 8px 15px; border-radius: 8px;
       background: #D28CF5; color: #fff; text-decoration: none;
     }
 
+    /* Small screens polish */
     @media (max-width: 420px) {
       h1 { font-size: 24px; }
       .page-card { padding: 18px; }
-      .nav-
-      btn { font-size: 13px; padding: 6px 12px; }
+      .nav-btn { font-size: 13px; padding: 6px 12px; }
     }
+
     .logo {
   height: 42px; /* adjust as needed */
   width: auto;
@@ -137,8 +147,7 @@
     <section class="donation-list" aria-label="捐助方式">
       <div class="donation-item">
         <h3 class="donation-title">加密货币</h3>
-        <p class="donation-desc">接受 USDT ERC20 的或其他 ETH 上的任何代幣。歡迎在付款时备注暱稱或聯絡方式以便我们致谢。</p>
-        <p class="donation-desc">收款地址：0xb142aeab7f5060f0833a8f56e14dcab85fa5b3d056a204ee47f7d2a9773dba54</p>
+        <p class="donation-desc">接受 USDT ERC20 的或其他 ETH 上的任何代幣。歡迎在付款时备注暱稱或聯絡方式以便我们致谢。收款地址：0xb142aeab7f5060f0833a8f56e14dcab85fa5b3d056a204ee47f7d2a9773dba54</p>
       </div>
       <!-- 你也可以添加 微信/支付宝/台灣本地轉帳 等方式 -->
     </section>
