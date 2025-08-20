@@ -1,7 +1,7 @@
 :root { --nav-h: 56px; }
 @font-face { 
     font-family: 'KingHwa_OldSong'; 
-    src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'), url('/static/fonts/KingHwa_OldSong.ttf') format('truetype'); 
+    src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'); 
     font-weight: 400; 
     font-style: normal; 
     font-display: swap; 
