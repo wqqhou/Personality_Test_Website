@@ -1,0 +1,26 @@
+{% set lang_cookie = (request.cookies.get('lang') or '') | lower %}
+{% set is_simplified = lang_cookie in ['zh-cn','cn','simp','sc','simple'] %}
+
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-left flex items-end">
+      <a href="/" class="nav-home flex items-end">
+        <img src="{{ request.url_for('static', path='images/icon.png') }}" alt="Logo" class="logo" />
+        <span style="font-family: 'KingHwa_OldSong', serif;" class="ml-2 text-lg sm:text-xl text-gray-700">The Potion</span>
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <div class="lang-switch" role="group" aria-label="Language switch">
+        <a href="/lang/zh-TW" class="lang-option {{ '' if is_simplified else 'active' }}" aria-pressed="{{ 'false' if is_simplified else 'true' }}">繁體</a>
+        <a href="/lang/zh-CN" class="lang-option {{ 'active' if is_simplified else '' }}" aria-pressed="{{ 'true' if is_simplified else 'false' }}">
+          <!-- keep label always Simplified -->
+          {{ '&#x7B80;&#x4F53;' | safe }}
+        </a>
+      </div>
+
+      <a href="/about" class="nav-btn">使用說明</a>
+      <a href="/donate" class="nav-btn">贊助</a>
+    </div>
+  </div>
+</nav>

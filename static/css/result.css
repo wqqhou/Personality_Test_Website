@@ -1,0 +1,144 @@
+      .result-card {
+        box-sizing: border-box;
+        width: 600px;
+        min-width: 50%;
+        max-width: 100%;   
+        margin: 0 auto;       /* ← centers horizontally */
+        background: #fff;
+        border: 1px solid #e6e6e6;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        padding: 20px 20px 12px;
+        overflow-y: auto;
+      }
+      .result-card > *:last-child { margin-bottom: 0; }
+  
+      h2 {
+        text-align: center;
+        margin: 0 0 16px 0;
+        font-size: 24px;
+      }
+  
+      /* ---------- Tooltip ---------- */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+        font-size: 14px;
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        min-width: 200px;
+        max-width: 340px;
+        width: max-content;
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        padding: 12px 18px;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 10;
+        top: 120%;             /* below the label */
+        left: 0;               /* prevents left overflow */
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        white-space: normal;
+        word-break: break-word;
+        box-sizing: border-box;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.11);
+      }
+      .tooltip:hover .tooltiptext,
+      .tooltip:active .tooltiptext,
+      .tooltip:focus .tooltiptext,
+      .tooltip.active .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+      }
+  
+      /* ---------- List + metric rows ---------- */
+      ul { list-style: none; padding: 0; margin: 0; }
+  
+      .metric-row {
+        display: grid;
+        grid-template-columns: 120px 1fr auto; /* fixed label width | bar | percent */
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;                 /* space before divider */
+        border-bottom: 1px solid rgba(0,0,0,0.08); /* subtle divider */
+        font-size: 14px;
+      }
+      .metric-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+  
+      .metric-label {
+        min-width: 120px;   /* keeps bars aligned */
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: ellipsis;
+      }
+  
+      .metric-bar {
+        position: relative;
+        height: 10px;
+        background: #eee;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .metric-fill {
+        height: 100%;
+        width: 0;
+        background: #D28CF5;
+        border-radius: 999px;
+        transition: width 400ms ease;
+      }
+  
+      .metric-value {
+        width: 54px;
+        text-align: right;
+        white-space: nowrap;
+      }
+  
+      /* Bottom link buttons (inside the card) */
+      .links {
+        margin-top: 12px;
+        text-align: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      .links a {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #D28CF5;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+      }
+      .links a:hover { opacity: 0.95; }
+  
+      /* Small screens */
+      @media (max-width: 420px) {
+        .nav-left a { font-size: 15px; }
+        .nav-btn { font-size: 13px; padding: 6px 12px; }
+        .result-card { padding: 16px; }
+        h2 { font-size: 20px; }
+        .metric-row { gap: 8px; font-size: 13px; }
+        .metric-bar { height: 8px; }
+        .metric-value { width: 48px; }
+      }
+  
+  .label-text {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

@@ -1,0 +1,46 @@
+
+
+    /* Page card */
+    .page-card {
+        width: 100%; max-width: 820px; background: #fff;
+        border: 1px solid #e6e6e6; border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        padding: 24px 22px;
+        box-sizing: border-box;
+      }
+      h1 { margin: 0 0 12px; font-size: 28px; text-align: center; }
+      p.lead { margin: 0 0 16px; text-align: center; color: #333; }
+  
+      /* Q&A accordion */
+      .qa { margin-top: 12px; }
+      details {
+        background: #fafafa; border: 1px solid #e8e8e8; border-radius: 8px;
+        padding: 10px 12px; margin-bottom: 10px;
+        transition: background 0.2s ease;
+      }
+      details[open] { background: #fdfdfd; }
+      summary {
+        cursor: pointer; font-size: 16px; list-style: none; outline: none;
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      summary::-webkit-details-marker { display: none; }
+      .arrow { transition: transform 0.2s ease; margin-left: 8px; }
+      details[open] .arrow { transform: rotate(90deg); }
+      .answer { margin-top: 8px; color: #444; font-size: 15px; }
+  
+      /* Footer links */
+      .links {
+        margin-top: 18px; text-align: center; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      }
+      .links a {
+        display: inline-block; padding: 8px 15px; border-radius: 8px;
+        background: #D28CF5; color: #fff; text-decoration: none;
+      }
+  
+      @media (max-width: 420px) {
+        h1 { font-size: 24px; }
+        summary { font-size: 15px; }
+        .answer { font-size: 14px; }
+        .page-card { padding: 18px; }
+        .nav-btn { font-size: 13px; padding: 6px 12px; }
+      }
