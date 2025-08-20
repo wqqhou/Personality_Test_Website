@@ -18,6 +18,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import StreamingResponse
 from typing import Any
 from opencc import OpenCC
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+
+
 # ----------------------------------------
 
 with open('questions.json') as f:
@@ -26,9 +33,9 @@ with open('questions.json') as f:
 app = FastAPI()
 if os.getenv("ENV") == "dev":
     app.mount("/static", StaticFiles(directory="static"), name="static")
-#app.mount("/static", StaticFiles(directory="static"), name="static")
+    
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
-
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # ---------- NEW: OpenCC middleware (Simplified → Traditional) ----------
 # Choose a profile:
 # 's2t'  = Simplified → General Traditional
