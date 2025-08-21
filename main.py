@@ -20,6 +20,9 @@ from typing import Any
 from opencc import OpenCC
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
+from datetime import datetime
+
+
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -189,6 +192,7 @@ app.add_middleware(OpenCCMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
 templates = Jinja2Templates(directory="templates")
+templates.env.globals["CURRENT_YEAR"] = datetime.utcnow().year
 templates.env.auto_reload = False  # Enable auto reload
 templates.env.cache = {}
 # Optional: Jinja2 filter to convert specific fragments in templates

@@ -92,3 +92,8 @@ body { margin: 0; padding: calc(24px + var(--nav-h)) 16px 12px; }
   .nav-btn,
   .lang-option { padding: 6px 12px; font-size: 13px; }
 }
+.footer .copyright {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #888;
+}
