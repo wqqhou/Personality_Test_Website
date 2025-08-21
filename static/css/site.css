@@ -1,4 +1,15 @@
-:root { --nav-h: 56px; }
+/* Sizes that adapt by screen */
+:root {
+  --nav-h: 56px;
+  --btn-h: 34px;   /* button height default */
+}
+
+@media (max-width: 480px) {
+  :root {
+    --nav-h: 48px;
+    --btn-h: 30px; /* slightly shorter buttons on small screens */
+  }
+}
 @font-face { 
     font-family: 'KingHwa_OldSong'; 
     src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'); 
@@ -30,7 +41,7 @@ body {
   display: inline-flex;          /* was inline-block */
   align-items: center;           /* vertical center */
   justify-content: center;       /* horizontal center */
-  height: 34px;                  /* pick a comfy height */
+  height: var(--nav-h);                  /* pick a comfy height */
   padding: 0 14px;               /* no top/bottom padding now */
   line-height: 1;                /* avoids baseline offset */
   border-radius: 8px;
