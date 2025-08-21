@@ -13,6 +13,96 @@
   <!-- Page-level extra CSS -->
   {% block head_extra %}{% endblock %}
 </head>
+<script>
+  (function () {
+    // ---- config ----
+    const IDLE_MS = 45000; // user considered idle after 45s without activity
+    const pageUrl = location.pathname + location.search;
+  
+    // ---- client id (cid) persisted in localStorage ----
+    const cidKey = 'cid';
+    let cid = localStorage.getItem(cidKey);
+    if (!cid) {
+      cid = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+      localStorage.setItem(cidKey, cid);
+    }
+  
+    // ---- tiny send helper ----
+    function send(ev, props) {
+      const payload = JSON.stringify({
+        event: ev,
+        client_id: cid,
+        url: pageUrl,
+        referrer: document.referrer || "",
+        props: props || {}
+      });
+      if (navigator.sendBeacon) {
+        const ok = navigator.sendBeacon("/e", new Blob([payload], {type: "application/json"}));
+        if (ok) return;
+      }
+      fetch("/e", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: payload,
+        keepalive: true
+      });
+    }
+  
+    // ---- expose global tracker for your app code ----
+    window.$track = send;
+  
+    // ---- auto page_view (fire exactly once per load) ----
+    send("page_view");
+  
+    // ---- engaged time measurement ----
+    let navStart = performance.now();                               // page lifetime
+    let visibleStart = (document.visibilityState === 'visible') ? performance.now() : null;
+    let engagedMs = 0;                                              // accumulated visible, non-idle time
+    let lastActivity = Date.now();
+  
+    const markActivity = () => { lastActivity = Date.now(); };
+    ['mousemove','scroll','keydown','touchstart','pointerdown'].forEach(ev =>
+      addEventListener(ev, markActivity, {passive:true})
+    );
+  
+    function accrue(now) {
+      if (visibleStart == null) return;                             // not visible
+      const idle = (Date.now() - lastActivity) > IDLE_MS;
+      if (!idle) engagedMs += (now - visibleStart);
+      visibleStart = now;
+    }
+  
+    document.addEventListener('visibilitychange', () => {
+      const now = performance.now();
+      if (document.visibilityState === 'hidden') accrue(now);
+      else visibleStart = now;
+    });
+  
+    function flush(reason) {
+      const now = performance.now();
+      accrue(now);
+      const totalMs = now - navStart;
+      send("page_leave", {
+        engaged_ms: Math.round(engagedMs),
+        total_ms: Math.round(totalMs),
+        reason: reason
+      });
+    }
+  
+    // exit hooks
+    addEventListener("pagehide", () => flush("pagehide"));
+    addEventListener("beforeunload", () => flush("beforeunload"));
+    addEventListener("freeze", () => flush("freeze"));
+  
+    // heartbeat every 15s (optional but useful)
+    setInterval(() => {
+      const now = performance.now();
+      accrue(now);
+      send("heartbeat", { engaged_ms: Math.round(engagedMs) });
+    }, 15000);
+  })();
+  </script>
+  
 <body>
     {% include "_navbar.html" %}
     <main class="page-wrap">

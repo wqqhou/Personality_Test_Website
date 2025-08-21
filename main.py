@@ -11,7 +11,11 @@ from fastapi.staticfiles import StaticFiles
 import random
 import os
 import metrics
+import uuid
 from starlette.middleware.gzip import GZipMiddleware
+from contextlib import asynccontextmanager
+
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 # ---- NEW: imports for the middleware ----
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -27,18 +31,46 @@ from datetime import datetime
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
-
-# ----------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with aiosqlite.connect("data.db") as db:
+        await db.executescript("""
+        CREATE TABLE IF NOT EXISTS events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          ts TEXT NOT NULL,
+          session_id TEXT,
+          client_id TEXT,
+          ip TEXT,
+          ua TEXT,
+          event TEXT NOT NULL,
+          url TEXT,
+          referrer TEXT,
+          props TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
+        CREATE INDEX IF NOT EXISTS idx_events_event ON events(event);
+        CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
+        """)
+        await db.commit()
+    yield
 
 with open('questions.json') as f:
     METRIC_CONFIG = json.load(f)
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
+app.router.lifespan_context = lifespan
 if os.getenv("ENV") == "dev":
     app.mount("/static", StaticFiles(directory="static"), name="static")
     
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# proxy headers before other middlewares
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
+# cookie security flag
+COOKIE_SECURE = os.getenv("COOKIE_SECURE", "true").lower() == "true"
+
 # ---------- NEW: OpenCC middleware (Simplified → Traditional) ----------
 # Choose a profile:
 # 's2t'  = Simplified → General Traditional
@@ -272,6 +304,7 @@ def set_language(variant: str, request: Request):
     referer = request.headers.get("referer") or "/"
     resp = RedirectResponse(referer, status_code=303)
     v = (variant or "").lower()
+    
 
     if v in {"zh-cn", "cn", "simp", "sc", "simple"}:
         resp.set_cookie(
@@ -279,7 +312,7 @@ def set_language(variant: str, request: Request):
             max_age=60*60*24*365,  # 1 year
             path="/",
             samesite="lax",
-            secure=False,  # set True if you’re on HTTPS only
+            secure=True,  # set True if you’re on HTTPS only
             httponly=False
         )
     else:
@@ -376,3 +409,34 @@ async def about(request: Request):
 @app.get("/donate", response_class=HTMLResponse)
 async def donation(request: Request):
     return templates.TemplateResponse("donate.html", {"request": request})
+
+@app.post("/e")
+async def track_event(request: Request):
+    payload = await request.json()
+    ev = payload.get("event")
+    if not ev:  # require an event name
+        return JSONResponse({"ok": False}, status_code=400)
+
+    # session id cookie (not PII)
+    sid = request.cookies.get("sid") or str(uuid.uuid4())
+    cid = payload.get("client_id")  # from localStorage
+
+    # basic context
+    ts = datetime.utcnow().isoformat()
+    ip = request.client.host
+    ua = request.headers.get("user-agent","")[:300]
+    url = payload.get("url","")
+    ref = payload.get("referrer","")
+    props = json.dumps(payload.get("props", {}), ensure_ascii=False)
+
+    async with aiosqlite.connect("data.db") as db:
+        await db.execute(
+            "INSERT INTO events (ts,session_id,client_id,ip,ua,event,url,referrer,props) VALUES (?,?,?,?,?,?,?,?,?)",
+            [ts,sid,cid,ip,ua,ev,url,ref,props]
+        )
+        await db.commit()
+
+    resp = JSONResponse({"ok": True})
+    if "sid" not in request.cookies:
+        resp.set_cookie("sid", sid, max_age=60*60*24*365, samesite="Lax", path="/", secure=COOKIE_SECURE)
+    return resp
