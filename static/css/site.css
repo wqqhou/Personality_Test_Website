@@ -25,10 +25,22 @@ body {
   display: flex; align-items: center; justify-content: space-between; }
 .nav-left a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
   color: #0A0A0A; font-size: 20px; font-weight: 600; }
-.nav-right { display: flex; gap: 10px; }
-.nav-btn { display: inline-block; padding: 6px 14px; border-radius: 8px;
-  background: #D28CF5; color: #fff; font-size: 14px; text-decoration: none;
-  transition: background .2s ease, opacity .2s ease; white-space: nowrap; }
+.nav-right { display: flex; gap: 10px; align-items: center; }
+.nav-btn { 
+  display: inline-flex;          /* was inline-block */
+  align-items: center;           /* vertical center */
+  justify-content: center;       /* horizontal center */
+  height: 34px;                  /* pick a comfy height */
+  padding: 0 14px;               /* no top/bottom padding now */
+  line-height: 1;                /* avoids baseline offset */
+  border-radius: 8px;
+  background: #D28CF5;
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
 .nav-btn:hover { background: #b36ee2; }
 .logo { height: 42px; width: auto; }
 
