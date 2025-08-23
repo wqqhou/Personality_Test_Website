@@ -27,14 +27,47 @@
   }
   
   .options {
-    display: flex;
+    display: flex;   /* force horizontal */
+    flex-wrap: nowrap;
     justify-content: space-between;
-    max-width: 100%;
-    overflow-x: auto;
-    margin-top: 8px;
     gap: 8px;
   }
   
+  .option-with-caption {
+    flex: 1 1 0;
+    min-width: 0;               /* prevents weird wrapping */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .options input[type="radio"] {
+    display: none;                  /* hide default radio */
+  }
+  
+  .options label {
+    display: block;
+    width: 100%;                    /* stretch to full width of flex cell */
+    text-align: center;
+    background: #fff;
+    color: #D28CF5;
+    border: 2px solid #D28CF5;
+    border-radius: 6px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .options input[type="radio"]:checked + label {
+    background: #D28CF5;
+    color: #fff;
+  }
+  
+  .option-with-caption small {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #666;
+  }
   label { cursor: pointer; }
   
   .btn {
