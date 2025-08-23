@@ -10,15 +10,9 @@
     --btn-h: 30px; /* slightly shorter buttons on small screens */
   }
 }
-@font-face { 
-    font-family: 'KingHwa_OldSong'; 
-    src: url('/static/fonts/KingHwa_OldSong.woff2') format('woff2'); 
-    font-weight: 400; 
-    font-style: normal; 
-    font-display: swap; 
-    } 
+
 body { 
-        font-family: 'KingHwa_OldSong', sans-serif; 
+        font-family:  sans-serif; 
         min-height: 100dvh;
         line-height: 1.6; 
         background: linear-gradient(117deg, rgba(235,192,191,0.00) 0%, rgba(210,155,174,0.50) 73.46%), 
