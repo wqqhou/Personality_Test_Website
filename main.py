@@ -5,13 +5,10 @@ from questions import QUESTION_LOOKUP
 import aiosqlite
 from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
-import re
-import json
+import re, json, random, os, metrics, uuid, io, time
+from urllib.parse import urlparse
+
 from fastapi.staticfiles import StaticFiles
-import random
-import os
-import metrics
-import uuid
 from starlette.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
 
@@ -20,16 +17,56 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 # ---- NEW: imports for the middleware ----
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import StreamingResponse
+from fastapi.responses import StreamingResponse
 from typing import Any
 from opencc import OpenCC
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
+CAPTCHA_TTL = 180
+CAPTCHA_W, CAPTCHA_H = 180, 60
+
+def _captcha_text(n=5):
+    # Avoid ambiguous: 0 O 1 l I 5 S
+    alphabet = "2346789ABCDEFGHJKLMNPQRTUVWXYZ"
+    return "".join(random.choice(alphabet) for _ in range(n))
+
+def _load_font(size=36) -> ImageFont.FreeTypeFont:
+    for p in FONT_CANDIDATES:
+        try:
+            if p.exists():
+                f = ImageFont.truetype(str(p), size)
+                # quick sanity: measure an 'A'
+                test = Image.new("RGB", (1, 1))
+                db = ImageDraw.Draw(test)
+                bbox = db.textbbox((0,0), "A", font=f)
+                if bbox and bbox[2] > 0 and bbox[3] > 0:
+                    return f
+        except Exception:
+            pass
+    # Final fallback (bitmap) – still returns *something*
+    return ImageFont.load_default()
+def _store_captcha(session: dict, answer: str):
+    session["captcha_answer"] = answer
+    session["captcha_time"] = int(time.time())
+def _valid_captcha(session: dict, user_answer: str) -> bool:
+    ans = session.get("captcha_answer")
+    ts  = session.get("captcha_time", 0)
+    if not ans or int(time.time()) - ts > CAPTCHA_TTL:
+        return False
+    return user_answer.strip().upper() == ans.upper()
 
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+
+# ⬇️ Use BASE_DIR here
+FONT_CANDIDATES = [
+    BASE_DIR / "static" / "fonts" / "DejaVuSans-Bold.ttf",           # bundled font
+    Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),    # system fallback
+]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -123,13 +160,30 @@ def _safe_headers(headers) -> dict:
     d.pop("Content-Encoding", None)
     return d
 
+CAPTCHA_NO_CACHE = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
 class OpenCCMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # Skip conversion for opt-out and /static
         if _should_skip(request):
             return await call_next(request)
 
         response = await call_next(request)
+
+        # 🚫 Never touch images or other non-text media
+        mt = (response.media_type or "").lower()
+        if request.url.path == "/captcha.png":
+            return response
+        if mt.startswith("image/") or mt.startswith("video/") or mt.startswith("audio/"):
+            return response
         media_type = (response.media_type or "").lower()
+        # ✅ Streams: leave them alone
+        if isinstance(response, StreamingResponse):
+            return response
 
         # Handle JSON
         if isinstance(response, JSONResponse) or "application/json" in media_type:
@@ -234,18 +288,19 @@ QUESTIONS = [QUESTION_LOOKUP[i] for i in range(1, len(QUESTION_LOOKUP)+1)]
 QUESTION_IDS = list(range(1, len(QUESTIONS) + 1))
 
 @app.post("/start", response_class=HTMLResponse)
-async def start_quiz(request: Request, email: str = Form(...)):
-    # Basic email format validation
-    if not re.match(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
-        return templates.TemplateResponse("email.html", {"request": request, "error": "請輸入有效的電子信箱。"})
-
-    request.session["email"] = email
+async def start_quiz(request: Request, captcha: str = Form(...)):
+    if not _valid_captcha(request.session, captcha):
+        request.session["start_error"] = "验证码错误或已过期，请重试。"
+        return RedirectResponse(url="/", status_code=303)
+    # Passed: init session answers and go to page 1
     request.session["answers"] = {}
     return RedirectResponse("/quiz?page=1", status_code=302)
 
 @app.get("/", response_class=HTMLResponse)
-async def email_form(request: Request):
-    return templates.TemplateResponse("email.html", {"request": request})
+async def landing(request: Request):
+    err = request.session.pop("start_error", None)
+    return templates.TemplateResponse("land.html", {"request": request, "error": err})
+
 
 @app.get("/quiz", response_class=HTMLResponse)
 async def show_quiz_page(request: Request, page: int = 1):
@@ -302,21 +357,18 @@ def set_language(variant: str, request: Request):
     anything else (zh-TW, tw, etc.) => delete cookie so middleware converts to Traditional
     """
     referer = request.headers.get("referer") or "/"
-    resp = RedirectResponse(referer, status_code=303)
-    v = (variant or "").lower()
-    
+    # extract path only
+    path = urlparse(referer).path or "/"
+    # avoid POST-only or unsafe paths
+    if path in {"/start"}:
+        path = "/"
+    resp = RedirectResponse(path, status_code=303)
 
+    v = (variant or "").lower()
     if v in {"zh-cn", "cn", "simp", "sc", "simple"}:
-        resp.set_cookie(
-            "lang", "zh-CN",
-            max_age=60*60*24*365,  # 1 year
-            path="/",
-            samesite="lax",
-            secure=True,  # set True if you’re on HTTPS only
-            httponly=False
-        )
+        resp.set_cookie("lang", "zh-CN", max_age=60*60*24*365, path="/",
+                        samesite="lax", secure=True, httponly=False)
     else:
-        # Traditional: remove cookie so OpenCC runs
         resp.delete_cookie("lang", path="/")
     return resp
 
@@ -359,7 +411,6 @@ async def result(request: Request):
         }
         for metric in percentages
     }
-    email = request.session.get("email", "unknown@example.com")
     timestamp = datetime.utcnow().isoformat()
 
     columns = ', '.join(percentages.keys())
@@ -368,9 +419,9 @@ async def result(request: Request):
 
     async with aiosqlite.connect("data.db") as db:
         await db.execute(f"""
-            INSERT INTO submissions (timestamp, email, {columns})
-            VALUES (?, ?, {placeholders})
-        """, [timestamp, email] + values)
+            INSERT INTO submissions (timestamp, {columns})
+            VALUES (?, {placeholders})
+        """, [timestamp] + values)
         await db.commit()
     # Prepare mandarin labels
     percentages_zh = {
@@ -410,6 +461,10 @@ async def about(request: Request):
 async def donation(request: Request):
     return templates.TemplateResponse("donate.html", {"request": request})
 
+@app.get("/start")
+async def start_get():
+    return RedirectResponse("/", status_code=303)
+
 @app.post("/e")
 async def track_event(request: Request):
     payload = await request.json()
@@ -440,3 +495,46 @@ async def track_event(request: Request):
     if "sid" not in request.cookies:
         resp.set_cookie("sid", sid, max_age=60*60*24*365, samesite="Lax", path="/", secure=COOKIE_SECURE)
     return resp
+
+
+@app.get("/captcha.png")
+async def captcha_png(request: Request):
+    text = _captcha_text()
+    _store_captcha(request.session, text)
+
+    W, H = CAPTCHA_W, CAPTCHA_H
+    img = Image.new("RGB", (W, H), (255, 255, 255))               # white bg
+    draw = ImageDraw.Draw(img)
+
+    # light noise lines
+    for _ in range(10):
+        x1, y1 = random.randint(0, W), random.randint(0, H)
+        x2, y2 = random.randint(0, W), random.randint(0, H)
+        draw.line([(x1, y1), (x2, y2)], fill=(200, 200, 200), width=1)
+
+    font = _load_font(size=36)
+    slot = CAPTCHA_W // (len(text) + 1)
+
+    for i, ch in enumerate(text, start=1):
+        bbox = draw.textbbox((0, 0), ch, font=font)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        cx = i * slot - tw // 2 + random.randint(-3, 3)
+        cy = (CAPTCHA_H - th) // 2 + random.randint(-3, 3)
+        draw.text((cx, cy), ch, font=font, fill=(40, 40, 40))
+
+    # gentle blur for anti-alias blending
+    img = img.filter(ImageFilter.GaussianBlur(radius=0.4))
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    buf.seek(0)
+    return StreamingResponse(
+        buf,
+        media_type="image/png",
+        headers={
+            # hard no-cache to avoid stale blanks
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        },
+    )

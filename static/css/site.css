@@ -72,8 +72,8 @@ body {
 /* robust centering for all pages */
 .page-wrap {
     box-sizing: border-box;
-    width: 100%;
-    max-width: 760px;           /* adjust as you like */
+    max-width: 100%;
+    width: 620px;           /* adjust as you like */
     margin-left: auto;
     margin-right: auto;
     padding-left: 16px;         /* keep some side padding */

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}The Potion{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ request.url_for('static', path='css/land.css') }}">
+{% endblock %}
+
+{% block content %}
+  
+  <main class="flex flex-col items-center min-h-screen w-full pt-[120px]">
+    <h1
+      style="font-family: 'KingHwa_OldSong', serif;"
+      class="font-normal uppercase text-center text-[#0A0A0A] text-[42px] sm:text-[64px] md:text-[96px] lg:text-[120px] leading-[1]"
+    >
+      BDSM 性向测验
+    </h1>
+    <div class="mt-10 flex flex-col items-center w-full" style="font-family: 'KingHwa_OldSong', serif;">
+      <label
+        for="captcha"
+        class="mb-6 text-[#0A0A0A] text-center font-normal text-[20px] sm:text-[32px] md:text-[42px] leading-[2]"
+      >
+      测验免注册、付费，输入验证码即可开始：
+      </label>
+      <img class="cap" id="cap" src="/captcha.png" alt="验证码" title="点击刷新"
+               onclick="this.src='/captcha.png?ts='+Date.now()" style= "padding-bottom: 5px;">
+         
+               <form action="/start" method="POST" class="mx-auto">
+                <div
+                  class="flex items-center justify-center gap-[8px] sm:gap-[12px] rounded-[8px] py-2 px-[4px] pl-2 sm:pl-4 pr-2 sm:pr-4 w-full max-w-[370px] bg-white"
+                  style="background: #fff; font-family: 'KingHwa_OldSong', serif;"
+                >
+                  <input
+                    id="cap"
+                    type="text"
+                    name="captcha"
+                    required
+                    placeholder="输入您的验证码"
+                    class="text-base sm:text-xl border-none outline-none bg-transparent placeholder:text-gray-400 w-full max-w-[200px] sm:max-w-[280px] h-[36px] pl-2 sm:pl-4"
+                    style="font-family: 'KingHwa_OldSong', serif;"
+                  />
+                  <button
+                    type="submit"
+                    class="flex items-center border-none outline-none justify-center py-2 px-2 rounded-[8px] w-[50px] sm:w-[60px] h-[30px] text-white text-base sm:text-xl font-normal"
+                    style="background: #D28CF5; font-family: 'KingHwa_OldSong', serif;"
+                  >
+                    开始
+                  </button>
+                </div>
+              </form>
+    </div>
+  </div>
+  {% if error %}<div class="err" style="color: #296673">{{ error }}</div>{% endif %}
+  <div class="hint">看不清？点击图片刷新。</div>
+  </main>
+  {% endblock %}

@@ -1,5 +1,8 @@
 /*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
 @layer properties;
+.visible {
+  visibility: visible;
+}
 .static {
   position: static;
 }
@@ -86,6 +89,9 @@
 }
 .text-\[\#0A0A0A\] {
   color: #0A0A0A;
+}
+.text-\[\#296673\] {
+  color: #296673;
 }
 .uppercase {
   text-transform: uppercase;
