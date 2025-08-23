@@ -7,10 +7,12 @@ from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
 import re, json, random, os, metrics, uuid, io, time
 from urllib.parse import urlparse
+from fastapi import Query
 
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
+from itsdangerous import TimestampSigner, BadSignature, SignatureExpired
 
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
@@ -27,7 +29,11 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 CAPTCHA_TTL = 180
 CAPTCHA_W, CAPTCHA_H = 180, 60
-
+CAPTCHA_NO_CACHE = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
 def _captcha_text(n=5):
     # Avoid ambiguous: 0 O 1 l I 5 S
     alphabet = "2346789ABCDEFGHJKLMNPQRTUVWXYZ"
@@ -48,15 +54,16 @@ def _load_font(size=36) -> ImageFont.FreeTypeFont:
             pass
     # Final fallback (bitmap) – still returns *something*
     return ImageFont.load_default()
-def _store_captcha(session: dict, answer: str):
-    session["captcha_answer"] = answer
-    session["captcha_time"] = int(time.time())
-def _valid_captcha(session: dict, user_answer: str) -> bool:
-    ans = session.get("captcha_answer")
-    ts  = session.get("captcha_time", 0)
-    if not ans or int(time.time()) - ts > CAPTCHA_TTL:
-        return False
-    return user_answer.strip().upper() == ans.upper()
+CAPTCHA_SECRET = os.getenv("CAPTCHA_SECRET", os.getenv("SESSION_SECRET_KEY", "dev-secret"))
+CAPTCHA_SIGNER = TimestampSigner(CAPTCHA_SECRET)
+
+
+def make_captcha_token(text: str) -> str:
+    return CAPTCHA_SIGNER.sign(text.encode("utf-8")).decode("utf-8")
+
+def read_captcha_token(token: str) -> str:
+    # raises SignatureExpired/BadSignature on failure
+    return CAPTCHA_SIGNER.unsign(token, max_age=CAPTCHA_TTL).decode("utf-8")
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -287,19 +294,15 @@ templates.env.filters["s2t"] = _convert_str
 QUESTIONS = [QUESTION_LOOKUP[i] for i in range(1, len(QUESTION_LOOKUP)+1)]
 QUESTION_IDS = list(range(1, len(QUESTIONS) + 1))
 
-@app.post("/start", response_class=HTMLResponse)
-async def start_quiz(request: Request, captcha: str = Form(...)):
-    if not _valid_captcha(request.session, captcha):
-        request.session["start_error"] = "验证码错误或已过期，请重试。"
-        return RedirectResponse(url="/", status_code=303)
-    # Passed: init session answers and go to page 1
-    request.session["answers"] = {}
-    return RedirectResponse("/quiz?page=1", status_code=302)
-
 @app.get("/", response_class=HTMLResponse)
 async def landing(request: Request):
     err = request.session.pop("start_error", None)
-    return templates.TemplateResponse("land.html", {"request": request, "error": err})
+    txt = _captcha_text()                     # e.g., 5 chars
+    token = make_captcha_token(txt)
+    return templates.TemplateResponse(
+        "land.html",
+        {"request": request, "error": err, "captcha_token": token}
+    )
 
 
 @app.get("/quiz", response_class=HTMLResponse)
@@ -465,6 +468,29 @@ async def donation(request: Request):
 async def start_get():
     return RedirectResponse("/", status_code=303)
 
+@app.post("/start", response_class=HTMLResponse)
+async def start_quiz(
+    request: Request,
+    captcha: str = Form(...),
+    captcha_token: str = Form(...)
+):
+    try:
+        text = read_captcha_token(captcha_token)
+    except SignatureExpired:
+        request.session["start_error"] = "验证码已过期，请重试。"
+        return RedirectResponse("/", status_code=303)
+    except BadSignature:
+        request.session["start_error"] = "验证码无效，请重试。"
+        return RedirectResponse("/", status_code=303)
+
+    if captcha.strip().upper() != text.upper():
+        request.session["start_error"] = "验证码错误，请重试。"
+        return RedirectResponse("/", status_code=303)
+
+    # Success
+    request.session["answers"] = {}
+    return RedirectResponse("/quiz?page=1", status_code=302)
+
 @app.post("/e")
 async def track_event(request: Request):
     payload = await request.json()
@@ -497,44 +523,41 @@ async def track_event(request: Request):
     return resp
 
 
-@app.get("/captcha.png")
-async def captcha_png(request: Request):
-    text = _captcha_text()
-    _store_captcha(request.session, text)
+@app.api_route("/captcha.png", methods=["HEAD"])
+async def captcha_head():
+    # some clients hit HEAD; just say OK with no cache headers
+    return Response(status_code=200, headers=CAPTCHA_NO_CACHE)
+
+@app.api_route("/captcha.png", methods=["GET"])
+async def captcha_png(token: str = Query(...)):
+    # Decode the text from the signed token (no session writes)
+    try:
+        text = read_captcha_token(token)
+    except SignatureExpired:
+        return Response(status_code=410, headers=CAPTCHA_NO_CACHE)  # gone/expired
+    except BadSignature:
+        return Response(status_code=400, headers=CAPTCHA_NO_CACHE)  # invalid
 
     W, H = CAPTCHA_W, CAPTCHA_H
-    img = Image.new("RGB", (W, H), (255, 255, 255))               # white bg
+    img = Image.new("RGB", (W, H), (255, 255, 255))
     draw = ImageDraw.Draw(img)
 
-    # light noise lines
     for _ in range(10):
         x1, y1 = random.randint(0, W), random.randint(0, H)
         x2, y2 = random.randint(0, W), random.randint(0, H)
         draw.line([(x1, y1), (x2, y2)], fill=(200, 200, 200), width=1)
 
     font = _load_font(size=36)
-    slot = CAPTCHA_W // (len(text) + 1)
-
+    slot = W // (len(text) + 1)
     for i, ch in enumerate(text, start=1):
         bbox = draw.textbbox((0, 0), ch, font=font)
         tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
         cx = i * slot - tw // 2 + random.randint(-3, 3)
-        cy = (CAPTCHA_H - th) // 2 + random.randint(-3, 3)
+        cy = (H - th) // 2 + random.randint(-3, 3)
         draw.text((cx, cy), ch, font=font, fill=(40, 40, 40))
 
-    # gentle blur for anti-alias blending
     img = img.filter(ImageFilter.GaussianBlur(radius=0.4))
-
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
     buf.seek(0)
-    return StreamingResponse(
-        buf,
-        media_type="image/png",
-        headers={
-            # hard no-cache to avoid stale blanks
-            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-            "Pragma": "no-cache",
-            "Expires": "0",
-        },
-    )
+    return StreamingResponse(buf, media_type="image/png", headers=CAPTCHA_NO_CACHE)

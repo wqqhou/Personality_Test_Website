@@ -21,10 +21,11 @@
       >
       免注册免付费 即刻开测：
       </label>
-      <img class="cap" id="cap" src="/captcha.png" alt="验证码" title="点击刷新"
-               onclick="this.src='/captcha.png?ts='+Date.now()" style= "padding-bottom: 5px;">
+
          
-               <form action="/start" method="POST" class="mx-auto">
+               <form action="/start" method="POST" class="mx-auto flex flex-col items-center gap-4">
+                <img class="cap" id="cap" src="/captcha.png?token={{ captcha_token }}" alt="验证码" title="点击刷新"
+                onclick="this.src='/captcha.png?token={{ captcha_token }}&ts='+Date.now()" style= "padding-bottom: 5px;">
                 <div
                   class="flex items-center justify-center gap-[8px] sm:gap-[12px] rounded-[8px] py-2 px-[4px] pl-2 sm:pl-4 pr-2 sm:pr-4 w-full max-w-[370px] bg-white"
                   style="background: #fff; font-family: sans-serif;"
@@ -38,6 +39,7 @@
                     class="text-base sm:text-xl border-none outline-none bg-transparent placeholder:text-gray-400 w-full max-w-[200px] sm:max-w-[280px] h-[36px] pl-2 sm:pl-4"
                     style="font-family: sans-serif;"
                   />
+                  <input type="hidden" name="captcha_token" value="{{ captcha_token }}">
                   <button
                     type="submit"
                     class="flex items-center border-none outline-none justify-center py-2 px-2 rounded-[8px] w-[50px] sm:w-[60px] h-[30px] text-white text-base sm:text-xl font-normal"
