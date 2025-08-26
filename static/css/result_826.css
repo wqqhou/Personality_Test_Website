@@ -9,7 +9,6 @@
         border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.06);
         padding: 20px 20px 12px;
-        overflow-y: auto;
       }
       .result-card > *:last-child { margin-bottom: 0; }
   
@@ -28,7 +27,7 @@
       }
       .tooltip .tooltiptext {
         visibility: hidden;
-        min-width: 200px;
+        min-width: 190px;
         max-width: 340px;
         width: max-content;
         background-color: #333;
@@ -142,3 +141,15 @@
     text-overflow: ellipsis;
   }
   
+  .btn {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 8px;
+    background: #D28CF5;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 16px;
+  }

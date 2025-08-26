@@ -1,37 +1,40 @@
 {% extends "base.html" %}
 {% block title %}The Potion{% endblock %}
 {% block head_extra %}
-<link rel="stylesheet" href="{{ request.url_for('static', path='css/result_823.css') }}">
+<link rel="stylesheet" href="{{ request.url_for('static', path='css/result_826.css') }}">
 {% endblock %}
 
 {% block content %}
   <!-- Main content -->
-  <div class="result-card">
-    <h2>您的 BDSM 分析結果：</h2>
+  <div id="capture">
+    <div class="result-card">
+      <h2>您的 BDSM 分析結果：</h2>
 
-    <ul>
-      {% for metric, data in results.items() %}
-        <li class="metric-row">
-          <div class="metric-label tooltip trigger-tooltip" tabindex="0">
-            <span class="label-text">{{ data.label }}</span>
-            <span class="tooltiptext">{{ data.description }}</span>
-          </div>
+      <ul>
+        {% for metric, data in results.items() %}
+          <li class="metric-row">
+            <div class="metric-label tooltip trigger-tooltip" tabindex="0">
+              <span class="label-text">{{ data.label }}</span>
+              <span class="tooltiptext">{{ data.description }}</span>
+            </div>
 
-          <div class="metric-bar" role="img" aria-label="{{ data.label }} {{ data.percent }}%">
-            <div class="metric-fill" style="width: {{ data.percent }}%;"></div>
-          </div>
+            <div class="metric-bar" role="img" aria-label="{{ data.label }} {{ data.percent }}%">
+              <div class="metric-fill" style="width: {{ data.percent }}%;"></div>
+            </div>
 
-          <div class="metric-value">{{ data.percent }}%</div>
-        </li>
-      {% endfor %}
-    </ul>
-
-    <div class="links">
-      <a href="/">再測一次</a>
-      </div>
+            <div class="metric-value">{{ data.percent }}%</div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
-  {% endblock %}
 
+  <div class="links" style="margin-top:16px;">
+    <a href="/">再測一次</a>
+    <button id="downloadBtn" class="btn">一键截图</button>
+  </div>
+
+  <!-- Put scripts INSIDE the content block so they actually render -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       // Tooltip open/close
@@ -56,4 +59,48 @@
     });
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('downloadBtn');
+      const node = document.getElementById('capture');
 
+      if (!btn || !node) {
+        console.error('Download button or capture node not found');
+        return;
+      }
+
+      btn.addEventListener('click', async () => {
+        try {
+          const scale = window.devicePixelRatio || 1;
+          const canvas = await html2canvas(node, {
+            backgroundColor: '#ffffff',
+            scale,
+            useCORS: true,
+            logging: false
+          });
+
+          if (!canvas) throw new Error('Canvas not created');
+
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              console.error('Failed to create blob from canvas');
+              return;
+            }
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            const ts = new Date().toISOString().replace(/[:.]/g, '-');
+            a.download = `component-${ts}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(a.href);
+          }, 'image/png');
+        } catch (e) {
+          console.error('Download failed:', e);
+          alert('下載失敗：請檢查主控台 (Console) 訊息。');
+        }
+      });
+    });
+  </script>
+{% endblock %}
