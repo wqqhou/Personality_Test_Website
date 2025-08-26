@@ -80,6 +80,8 @@
         white-space: nowrap;
         overflow: visible;
         text-overflow: ellipsis;
+        display: inline-flex;      /* align children horizontally */
+        gap: 2px;
       }
   
       .metric-bar {
@@ -152,4 +154,22 @@
     cursor: pointer;
     font-family: sans-serif;
     font-size: 16px;
+  }
+
+  .tooltip-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 12px;            /* smaller circle */
+    height: 12px;           /* keep equal for perfect circle */
+    border-radius: 50%;     
+    background: #ccc;
+    color: #000;
+    font-size: 9px;         /* scale text down */
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;         
+    margin-left: 4px;       /* little gap from label */
+    position: relative;
+    top: 2px;               /* nudge downward */
   }

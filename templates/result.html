@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}The Potion{% endblock %}
 {% block head_extra %}
-<link rel="stylesheet" href="{{ request.url_for('static', path='css/result_826.css') }}">
+<link rel="stylesheet" href="{{ request.url_for('static', path='css/result_827.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -15,6 +15,7 @@
           <li class="metric-row">
             <div class="metric-label tooltip trigger-tooltip" tabindex="0">
               <span class="label-text">{{ data.label }}</span>
+              <span class="tooltip-icon">?</span>
               <span class="tooltiptext">{{ data.description }}</span>
             </div>
 
