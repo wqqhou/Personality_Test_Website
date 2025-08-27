@@ -299,6 +299,7 @@ async def landing(request: Request):
     err = request.session.pop("start_error", None)
     txt = _captcha_text()                     # e.g., 5 chars
     token = make_captcha_token(txt)
+
     return templates.TemplateResponse(
         "land.html",
         {"request": request, "error": err, "captcha_token": token}
@@ -381,6 +382,11 @@ async def result(request: Request):
     shuffled_question_ids = request.session.get('shuffled_question_ids', QUESTION_IDS.copy())
     metric_scores = {metric: 0 for metric in METRIC_CONFIG}
     metric_counts = {metric: 0 for metric in METRIC_CONFIG}
+            # submission count
+    async with aiosqlite.connect("data.db") as db:
+        async with db.execute("SELECT COUNT(*) FROM submissions") as cursor:
+            row = await cursor.fetchone()
+            total = row[0]
 
     # Iterate over metrics/questions and lookup answers using stored shuffled IDs
     for metric, questions in METRIC_CONFIG.items():
@@ -446,15 +452,9 @@ async def result(request: Request):
 
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "results": sorted_results
+        "results": sorted_results,
+        "total_submissions": total
     })
-
-@app.get("/admin/count")
-async def count_submissions():
-    async with aiosqlite.connect("data.db") as db:
-        async with db.execute("SELECT COUNT(*) FROM submissions") as cursor:
-            row = await cursor.fetchone()
-            return {"total_submissions": row[0]}
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):

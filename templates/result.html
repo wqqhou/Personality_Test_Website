@@ -9,7 +9,9 @@
   <div id="capture">
     <div class="result-card">
       <h2>您的 BDSM 分析結果：</h2>
-
+      <p>   
+          你好呀！你是第 <span class="font-bold">{{ total_submissions }}</span> 位来到这里的旅行者。稍作休息后，便以更加清晰的心境，继续你的旅程吧！也请你代我向那些前路的风景问好，那是唯有你才能到达的地方。
+      </p>
       <ul>
         {% for metric, data in results.items() %}
           <li class="metric-row">
