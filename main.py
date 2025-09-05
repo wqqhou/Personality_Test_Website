@@ -71,7 +71,7 @@ BANNER_BG = BASE_DIR / "static" / "images" / "banner_bg.png"
 BADGE_DIR = BASE_DIR / "static" / "images" / "badges"
 METRIC_BADGES = metrics.METRICS_BADGE
 
-BADGE_SIZE = (220, 220)  # (w,h) each badge
+BADGE_SIZE = (250, 250)  # (w,h) each badge
 BADGE_POS = [
     (380,  140),
     (600,  140),
