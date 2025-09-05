@@ -73,11 +73,11 @@ METRIC_BADGES = metrics.METRICS_BADGE
 
 BADGE_SIZE = (250, 250)  # (w,h) each badge
 BADGE_POS = [
-    (380,  140),
-    (600,  140),
-    (820,  140),
-    (1040, 140),
-    (1260, 140),
+    (350,  180),
+    (570,  180),
+    (790,  180),
+    (1010, 180),
+    (1230, 180),
 ]
 # ⬇️ Use BASE_DIR here
 FONT_CANDIDATES = [
