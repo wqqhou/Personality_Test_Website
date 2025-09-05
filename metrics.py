@@ -52,3 +52,30 @@ DES_ZH = {
 "explorer":"他们乐于尝试新玩法，对未知保持开放与正向态度。",
 "switch":"他们能在主导与服从之间灵活切换，视情境扮演上位者或下位者。"
 }
+METRICS_BADGE = {
+"brat":"brat.png",
+"brat_tamer":"brat_tamer.png",
+"degradee":"degradee.png",
+"degrader":"degrader.png",
+"sub":"sub.png",
+"dom":"dom.png",
+"rope_bunny":"rope_bunny.png",
+"rigger":"rigger.png",
+"pet":"pet.png",
+"owner":"owner.png",
+"slave":"slave.png",
+"master":"master.png",
+"exhibitionist":"exhibitionist.png",
+"voyeur":"voyeur.png",
+"little":"little.png",
+"daddy":"daddy.png",
+"masochist":"masochist.png",
+"sadist":"sadist.png",
+"predator":"predator.png",
+"prey":"prey.png",
+"cuckold":"cuckold.png",
+"cuckqueen":"cuckqueen.png",
+"poly":"poly.png",
+"explorer":"explorer.png",
+"switch":"switch.png"
+  }

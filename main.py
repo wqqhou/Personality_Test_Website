@@ -5,15 +5,13 @@ from questions import QUESTION_LOOKUP
 import aiosqlite
 from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
-import re, json, random, os, metrics, uuid, io, time
+import json, random, os, metrics, uuid, io, calculation
 from urllib.parse import urlparse
 from fastapi import Query
-
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
 from itsdangerous import TimestampSigner, BadSignature, SignatureExpired
-
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 # ---- NEW: imports for the middleware ----
@@ -68,7 +66,19 @@ def read_captcha_token(token: str) -> str:
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+BANNER_W, BANNER_H = 1500, 500
+BANNER_BG = BASE_DIR / "static" / "images" / "banner_bg.png"
+BADGE_DIR = BASE_DIR / "static" / "images" / "badges"
+METRIC_BADGES = metrics.METRICS_BADGE
 
+BADGE_SIZE = (220, 220)  # (w,h) each badge
+BADGE_POS = [
+    (380,  140),
+    (600,  140),
+    (820,  140),
+    (1040, 140),
+    (1260, 140),
+]
 # ⬇️ Use BASE_DIR here
 FONT_CANDIDATES = [
     BASE_DIR / "static" / "fonts" / "DejaVuSans-Bold.ttf",           # bundled font
@@ -183,8 +193,9 @@ class OpenCCMiddleware(BaseHTTPMiddleware):
 
         # 🚫 Never touch images or other non-text media
         mt = (response.media_type or "").lower()
-        if request.url.path == "/captcha.png":
+        if request.url.path == "/captcha.png" or request.url.path == "/banner.png":
             return response
+            
         if mt.startswith("image/") or mt.startswith("video/") or mt.startswith("audio/"):
             return response
         media_type = (response.media_type or "").lower()
@@ -380,37 +391,13 @@ def set_language(variant: str, request: Request):
 async def result(request: Request):
     form_data = request.session.get("answers", {})
     shuffled_question_ids = request.session.get('shuffled_question_ids', QUESTION_IDS.copy())
-    metric_scores = {metric: 0 for metric in METRIC_CONFIG}
-    metric_counts = {metric: 0 for metric in METRIC_CONFIG}
             # submission count
     async with aiosqlite.connect("data.db") as db:
         async with db.execute("SELECT COUNT(*) FROM submissions") as cursor:
             row = await cursor.fetchone()
             total = row[0]
 
-    # Iterate over metrics/questions and lookup answers using stored shuffled IDs
-    for metric, questions in METRIC_CONFIG.items():
-        for q in questions:
-            qid = str(q["question"])  # Original question ID as str
-            direction = q["direction"]
-
-            # Get answer from session answers using original question ID (stored as shuffled IDs)
-            answer = form_data.get(qid)
-            if answer is None:
-                continue
-
-            score = (int(answer) - 1) / 6  # normalize 0-1
-            if direction == "negative":
-                score = 1 - score
-
-            metric_scores[metric] += score
-            metric_counts[metric] += 1
-
-    percentages = {
-        metric: round((metric_scores[metric] / metric_counts[metric]) * 100, 2)
-        if metric_counts[metric] else 0
-        for metric in metric_scores
-    }
+    percentages = calculation.compute_percentages_from_session(form_data)
 
     results = {
         metric: {
@@ -561,3 +548,54 @@ async def captcha_png(token: str = Query(...)):
     img.save(buf, format="PNG", optimize=True)
     buf.seek(0)
     return StreamingResponse(buf, media_type="image/png", headers=CAPTCHA_NO_CACHE)
+
+@app.get("/banner.png")
+async def banner_png(request: Request):
+    # 1) Compute top 5 metrics from session
+    answers = request.session.get("answers", {}) or {}
+    percentages = calculation.compute_percentages_from_session(answers)
+    top5 = calculation.top_n_metrics(percentages, n=5)
+    if not top5:
+        # no answers → send a tiny 1x1 image to avoid 500
+        tiny = Image.new("RGB", (1,1), "white")
+        buf = io.BytesIO(); tiny.save(buf, format="PNG"); buf.seek(0)
+        return StreamingResponse(buf, media_type="image/png", headers=CAPTCHA_NO_CACHE)
+
+    # 2) Load background
+    try:
+        base = Image.open(BANNER_BG).convert("RGBA")
+    except Exception:
+        # fallback: plain gradient white
+        base = Image.new("RGBA", (BANNER_W, BANNER_H), (255,255,255,255))
+
+    # 3) Overlay badges
+    for idx, (metric_key, _pct) in enumerate(top5):
+        if idx >= len(BADGE_POS):
+            break
+        badge_name = METRIC_BADGES.get(metric_key)
+        if not badge_name:
+            continue
+        badge_path = BADGE_DIR / badge_name
+        if not badge_path.exists():
+            continue
+        try:
+            badge = Image.open(badge_path).convert("RGBA")
+            if BADGE_SIZE:
+                badge = badge.resize(BADGE_SIZE, Image.LANCZOS)
+            x, y = BADGE_POS[idx]
+            # Bounds check (optional)
+            x = max(0, min(x, BANNER_W - badge.width))
+            y = max(0, min(y, BANNER_H - badge.height))
+            base.alpha_composite(badge, (x, y))
+        except Exception:
+            continue
+
+    # 4) Return as downloadable PNG
+    buf = io.BytesIO()
+    base.convert("RGB").save(buf, format="PNG", optimize=True)
+    buf.seek(0)
+    headers = {
+        **CAPTCHA_NO_CACHE,
+        "Content-Disposition": 'attachment; filename="the_potion_banner.png"',
+    }
+    return StreamingResponse(buf, media_type="image/png", headers=headers)
