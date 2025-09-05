@@ -71,13 +71,13 @@ BANNER_BG = BASE_DIR / "static" / "images" / "banner_bg.png"
 BADGE_DIR = BASE_DIR / "static" / "images" / "badges"
 METRIC_BADGES = metrics.METRICS_BADGE
 
-BADGE_SIZE = (200, 200)  # (w,h) each badge
+BADGE_SIZE = (180, 200)  # (w,h) each badge
 BADGE_POS = [
-    (380,  140),
-    (600,  140),
-    (820,  140),
-    (1040, 140),
-    (1260, 140),
+    (380,  145),
+    (600,  145),
+    (820,  145),
+    (1040, 145),
+    (1260, 145),
 ]
 # ⬇️ Use BASE_DIR here
 FONT_CANDIDATES = [
