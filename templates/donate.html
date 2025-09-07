@@ -2,33 +2,122 @@
 {% block title %}The Potion{% endblock %}
 
 {% block head_extra %}
-<link rel="stylesheet" href="{{ request.url_for('static', path='css/donate_823.css') }}">
+<link rel="stylesheet" href="{{ request.url_for('static', path='css/donate_907.css') }}">
 {% endblock %}
 
 {% block content %}
   <main class="page-card">
-    <h1>捐助我们</h1>
-    <p class="lead">如果这个测验对你有帮助，欢迎支持我们继续改进与维护。</p>
-    <p class="lead">目前实际的维护成本（伺服器、网域和其它第三方服务）为 50 USD/月</p>
-
+    <h1>湖邊小屋</h1>
     <section class="donation-list" aria-label="捐助方式">
       <div class="donation-item">
-        <h3 class="donation-title">加密货币</h3>
-        <p class="donation-desc">接受 USDT ERC20 的或其他 ETH 上的任何代币。欢迎在付款时备注昵称或联络方式以便我们致谢。收款地址：0xcf4d78a27ef4a9d070717c522b9eb69ff67eacf0</p>
+        <h3 class="donation-title">旅人手記</h3>
+        <div id="notebook-container" class="notebook-container">
+          <div class="notebook-content">
+              {% for comment in comments %}
+              <div class="comment-page">
+                  <p class="comment-text">{{ comment.comment }}</p>
+                  <div class="comment-footer">
+                      <span class="comment-user">-- 署名： {{ comment.user_id }}</span>
+                      <span class="comment-time" data-seconds="{{ comment.timestamp }}"></span>
+                  </div>
+              </div>
+              {% else %}
+                  <p class="no-comments">No notes left in the traveler's journal yet.</p>
+              {% endfor %}
+          </div>
+
+          <div class="notebook-controls">
+              <button id="prev-button" class="nav-arrow-overlay" title="Previous Page"></button>
+              <span id="page-counter"></span>
+              <button id="next-button" class="nav-arrow-overlay" title="Next Page"></button>
+          </div>
+      </div>
+        <div class="links">
+          <a href="https://buymeacoffee.com/lakecattt" target="blank">留下筆記</a>
+        </div>
       </div>
     </section>
-    <section class="donation-list" aria-label="捐助方式">
-      <div class="donation-item">
-        <h3 class="donation-title">Buy Me a Coffee</h3>
-        <p class="donation-desc">點擊按鈕或每個頁面右下角的咖啡圖示，透過 Buy Me a Coffee 平台，可以用信用卡等多種方式小額支持我們，也可以附上想說的話和聯絡方式以便致謝OuO</p>
-        <div class="links">
-          <a href="https://buymeacoffee.com/lakecattt" target="blank">贊助我們一杯咖啡</a>
-        </div>
-          </div>
-    </section>
+
     <div class="links">
       <a href="/about">了解更多</a>
       <a href="/">回到首页</a>
     </div>
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all the elements we need to control
+        const notebookContainer = document.getElementById('notebook-container');
+        const pages = document.querySelectorAll('.comment-page');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const pageCounter = document.getElementById('page-counter');
+        
+        let currentPageIndex = 0;
+        const totalPages = pages.length;
+
+        // The URL paths for your background images
+        const firstPageBg = "url({{ request.url_for('static', path='images/notebook-first-page.png') }})";
+        const middlePageBg = "url({{ request.url_for('static', path='images/notebook-middle-page.png') }})";
+
+        function showPage(index) {
+            // 1. Hide all comment text pages
+            pages.forEach(page => page.style.display = 'none');
+            if (pages[index]) {
+                pages[index].style.display = 'flex';
+            }
+
+            // 2. Change the main background image
+            if (index === 0) {
+                notebookContainer.style.backgroundImage = firstPageBg;
+            } else {
+                notebookContainer.style.backgroundImage = middlePageBg;
+            }
+
+            // 3. Update the page counter
+            pageCounter.textContent = `${index + 1} / ${totalPages}`;
+
+            // 4. Show/hide the invisible back button
+            // The back arrow doesn't exist on page 1, so we hide its clickable area.
+            prevButton.style.display = (index === 0) ? 'none' : 'block';
+            
+            // 5. Disable the next button on the last page
+            nextButton.disabled = (index >= totalPages - 1);
+        }
+
+        // --- Event Listeners ---
+        nextButton.addEventListener('click', () => {
+            if (currentPageIndex < totalPages - 1) {
+                currentPageIndex++;
+                showPage(currentPageIndex);
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                showPage(currentPageIndex);
+            }
+        });
+
+        // --- Timestamp Conversion ---
+        const timeElements = document.querySelectorAll('.comment-time');
+        timeElements.forEach(element => {
+            const timestampAttr = element.getAttribute('data-seconds');
+            if (timestampAttr && !isNaN(timestampAttr)) {
+                const date = new Date(parseInt(timestampAttr, 10) * 1000);
+                element.textContent = date.toLocaleDateString();
+            }
+        });
+
+        // --- Initial Setup ---
+        if (totalPages > 0) {
+            showPage(0); // Show the first page on load
+        } else {
+            notebookContainer.style.backgroundImage = firstPageBg;
+            pageCounter.textContent = '0 / 0';
+            prevButton.style.display = 'none';
+            nextButton.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

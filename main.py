@@ -13,6 +13,8 @@ from starlette.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
 from itsdangerous import TimestampSigner, BadSignature, SignatureExpired
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+from pydantic import BaseModel
+from typing import List
 
 # ---- NEW: imports for the middleware ----
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -449,7 +451,18 @@ async def about(request: Request):
 
 @app.get("/donate", response_class=HTMLResponse)
 async def donation(request: Request):
-    return templates.TemplateResponse("donate.html", {"request": request})
+    async with aiosqlite.connect("data.db") as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute(
+            """
+            SELECT user_id, comment, timestamp FROM supporter
+            ORDER BY timestamp DESC
+            LIMIT 20 
+            """
+        )
+        rows = await cursor.fetchall()
+        
+    return templates.TemplateResponse("donate.html", {"request": request, "comments": rows})
 
 @app.get("/start")
 async def start_get():

@@ -50,7 +50,15 @@ async def init():
                         """)
         await db.execute("CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts)")
         await db.execute("CREATE INDEX IF NOT EXISTS idx_events_event ON events(event)")
-        await db.execute("CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id)" )           
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id)" )         
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS supporter (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL CHECK(LENGTH(user_id) <= 15),
+                comment TEXT NOT NULL CHECK(LENGTH(comment) <= 100),
+                timestamp INTEGER NOT NULL
+                )           
+                        """)  
         await db.commit()
         print("Database initialized.")
 

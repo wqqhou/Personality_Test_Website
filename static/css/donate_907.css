@@ -1,0 +1,197 @@
+    /* Page card */
+    .page-card {
+        width: 100%; max-width: 820px; background: #fff;
+        border: 1px solid #e6e6e6; border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        padding: 24px 22px;
+        box-sizing: border-box;
+      }
+      h1 { margin: 0 0 12px; font-size: 28px; text-align: center; }
+      p.lead { margin: 0 0 16px; text-align: center; color: #333; }
+  
+      /* Donation list: mobile-first single column */
+      .donation-list { margin-top: 12px; display: grid; gap: 12px; }
+  
+  /* Keep these base styles */
+  .donation-item {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;            /* vertical stack */
+    flex-direction: column;   /* title above description */
+    gap: 6px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .donation-title { margin: 0; font-size: 18px; line-height: 1.3; }
+  .donation-desc  { margin: 0; color: #444; font-size: 15px; line-height: 1.55; }
+  
+      .links {
+        margin-top: 18px; text-align: center;
+        display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      }
+      .links a {
+        display: inline-block; padding: 8px 15px; border-radius: 8px;
+        background: #D28CF5; color: #fff; text-decoration: none;
+      }
+  
+      /* Small screens polish */
+      @media (max-width: 420px) {
+        h1 { font-size: 24px; }
+        .page-card { padding: 18px; }
+        .nav-btn { font-size: 13px; padding: 6px 12px; }
+      }
+
+  /* static/css/notebook.css */
+
+.notebook-container {
+  position: relative;
+  width: 388px;
+  height: 520px;
+  margin: 20px auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* The background-image is now set by JavaScript */
+}
+
+.notebook-content {
+  position: absolute;
+  top: 55px;
+  left: 75px;
+  width: 240px;
+  height: 350px;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: 'Pixelify Sans', cursive;
+  color: #333;
+}
+
+.comment-page {
+  display: none; /* Hidden by default, shown by JS */
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* --- Styles for text content --- */
+.comment-text {
+  font-size: 16px;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+.comment-footer {
+  text-align: right;
+  font-size: 12px;
+  color: #555;
+  margin-top: 20px;
+}
+.comment-user {
+  display: block;
+}
+
+
+/* --- Controls Overlay Styles --- */
+.notebook-controls {
+  position: absolute;
+  bottom: 45px; /* Adjust vertical position of the control area */
+  width: 100%;
+  height: 40px; /* Height of the control area */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-arrow-overlay {
+  position: absolute;
+  height: 40px; /* Clickable height */
+  width: 40px;  /* Clickable width */
+  background: transparent; /* Makes the button invisible */
+  border: none;
+  cursor: pointer;
+  /*outline: 1px solid red; /* UNCOMMENT THIS LINE TO SEE THE CLICKABLE AREAS! */
+}
+
+.nav-arrow-overlay:disabled {
+  cursor: not-allowed;
+  display: none; /* Hide the next button on the last page */
+}
+
+/* *** ADJUST THESE PIXEL VALUES TO FIT YOUR IMAGE *** */
+#prev-button {
+  left: 85px; /* Distance from the left edge of the container */
+}
+
+#next-button {
+  right: 85px; /* Distance from the right edge of the container */
+}
+
+#page-counter {
+  font-family: 'Pixelify Sans', cursive;
+  font-size: 18px;
+  color: #444;
+}
+/* static/css/notebook.css */
+
+/* --- Add all the code below to the end of your existing file --- */
+
+@media (max-width: 480px) {
+  /* This block only applies on screens 480px or narrower */
+
+  .notebook-container {
+      width: 100%; /* Make the notebook take the full screen width */
+      height: 0;
+      /*
+       This trick maintains the aspect ratio (520 / 388 = 1.34).
+       The height will be 134% of the width.
+      */
+      padding-bottom: 134%;
+      margin: 5px auto; /* Reduce top/bottom margin */
+  }
+
+  .notebook-content {
+      /*
+       Recalculating positions as percentages of the container.
+       Example: top was 55px in a 520px tall container -> (55/520) * 100 = 10.6%
+      */
+      top: 10.6%;
+      left: 19.3%;
+      width: 61.8%;
+      height: 67.3%;
+  }
+
+  .comment-text {
+      font-size: 11px; /* Slightly smaller font for readability on small screens */
+      line-height: 1.4;
+  }
+
+  .comment-footer {
+      font-size: 8px;
+  }
+
+  .notebook-controls {
+      /* Recalculating: bottom was 45px in a 520px container -> (45/520) = 8.65% */
+      bottom: 8.65%;
+      height: 8%; /* Make control area proportional */
+  }
+
+  /* Make clickable areas proportional too */
+  .nav-arrow-overlay {
+      height: 100%;
+      width: 25%;
+  }
+
+  /* Recalculating: left/right was 85px in a 388px container -> (85/388) = 21.9% */
+  #prev-button {
+      left: 21.9%;
+  }
+
+  #next-button {
+      right: 21.9%;
+  }
+
+  #page-counter {
+      font-size: 16px; /* Adjust font size for mobile */
+  }
+}
