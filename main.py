@@ -439,10 +439,30 @@ async def result(request: Request):
         )
     )
 
+    sorted_keys = [
+    item[0] for item in sorted(
+        results.items(),
+        key=lambda item: item[1]['percent'],
+        reverse=True
+    )
+]
+    top_metric = sorted_keys[0] if len(sorted_keys) > 0 else None
+    top_metric_label = metrics.METRICS_ZH.get(top_metric, "") if top_metric else ""
+    second_metric = sorted_keys[1] if len(sorted_keys) > 1 else None
+    second_metric_label = metrics.METRICS_ZH.get(second_metric, "") if second_metric else ""
+    third_metric = sorted_keys[2] if len(sorted_keys) > 2 else None
+    third_metric_label = metrics.METRICS_ZH.get(third_metric, "") if third_metric else ""
+    metric_command = metrics.AD_ZH.get(top_metric, "")
+
+    ad_text = f'我的BDSM屬性是{top_metric_label}、{second_metric_label}、{third_metric_label}如果這樣對我我會很開心噢！我最喜歡的是{metric_command}'
+    ad_url = f'https://example.com'
+
     return templates.TemplateResponse("result.html", {
         "request": request,
         "results": sorted_results,
-        "total_submissions": total
+        "total_submissions": total,
+        "text_to_copy": ad_text,
+        "destination_url": ad_url
     })
 
 @app.get("/about", response_class=HTMLResponse)
