@@ -6,7 +6,14 @@
   <link rel="icon" href="/static/images/icon.png" type="image/x-icon">
   <link href="/static/css/style.css" rel="stylesheet" />
   <title>{% block title %}The Potion{% endblock %}</title>
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-S3ENQYRKHR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-S3ENQYRKHR');
+  </script>
   <!-- Shared CSS -->
   <link rel="stylesheet" href="{{ request.url_for('static', path='css/site_823.css') }}{% if STATIC_VERSION %}?v={{ STATIC_VERSION }}{% endif %}">
   <!-- Page-level extra CSS -->
