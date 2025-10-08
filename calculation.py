@@ -19,8 +19,8 @@ def compute_percentages_from_session(session_answers: dict) -> dict[str, float]:
             metric_counts[metric] += 1
 
     percentages = {
-        m: round((metric_scores[m] / metric_counts[m]) * 100, 0) 
-        if metric_counts[m] else 0.0
+        m: round((metric_scores[m] / metric_counts[m]) * 100) 
+        if metric_counts[m] else 0
         for m in metric_scores
     }
     return percentages
