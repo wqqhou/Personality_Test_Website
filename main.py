@@ -293,6 +293,20 @@ class OpenCCMiddleware(BaseHTTPMiddleware):
             return response
 # ----------------------------------------------------------------------
 
+
+async def get_ads_from_db(): 
+    """Connects to the SQLite DB asynchronously and fetches all ad strings."""
+    try:
+        async with aiosqlite.connect("data.db") as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT ad_content FROM ads")
+            rows = await cursor.fetchall()
+            ads_list = [row['ad_content'] for row in rows]
+            return ads_list
+    except aiosqlite.Error as e:
+        print(f"Database error: {e}")
+        return ["Error: Could not fetch ads from the database."]
+    
 # IMPORTANT: add OpenCC BEFORE GZip so we convert then compress
 app.add_middleware(OpenCCMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=500)
@@ -338,11 +352,14 @@ async def show_quiz_page(request: Request, page: int = 1):
 
     total_pages = (len(shuffled_question_ids) + per_page - 1) // per_page
 
+    host_ads = await get_ads_from_db()
+
     return templates.TemplateResponse("quiz_paginated.html", {
         "request": request,
         "questions": paginated_questions,
         "current_page": page,
-        "total_pages": total_pages
+        "total_pages": total_pages,
+        "ad_texts": host_ads
     })
 
 @app.post("/quiz", response_class=HTMLResponse)

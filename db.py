@@ -59,6 +59,13 @@ async def init():
                 timestamp INTEGER NOT NULL
                 )           
                         """)  
+        await db.execute('''
+                    CREATE TABLE IF NOT EXISTS ads (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ad_content TEXT NOT NULL
+                    )
+                        ''')
+
         await db.commit()
         print("Database initialized.")
 
